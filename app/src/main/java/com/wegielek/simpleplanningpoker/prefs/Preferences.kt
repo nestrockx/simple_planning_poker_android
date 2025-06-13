@@ -6,6 +6,7 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
+@Suppress("DEPRECATION")
 class Preferences {
     companion object {
         fun getTokenFromStorage(context: Context): String? {
