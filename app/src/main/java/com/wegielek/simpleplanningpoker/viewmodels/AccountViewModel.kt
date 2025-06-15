@@ -1,5 +1,6 @@
 package com.wegielek.simpleplanningpoker.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wegielek.simpleplanningpoker.data.models.ParticipantUser
@@ -11,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel
+class AccountViewModel
     @Inject
     constructor(
         private val repository: PokerRepository,
@@ -26,6 +27,13 @@ class MainViewModel
         private fun fetchUserInfo() {
             viewModelScope.launch {
                 _user.value = repository.getUserInfo()
+                Log.d(
+                    "Rooms: ",
+                    repository
+                        .getRooms()
+                        .results.size
+                        .toString(),
+                )
             }
         }
     }

@@ -60,9 +60,9 @@ fun CustomNavigationBarItem(
                             interactionSource = interactionSource,
                             indication =
                                 ripple(
-                                    bounded = true,
+                                    bounded = false,
                                     color = rippleColor,
-                                    radius = 20.dp,
+                                    radius = 25.dp,
                                 ),
                             onClick = onClick,
                         ),
