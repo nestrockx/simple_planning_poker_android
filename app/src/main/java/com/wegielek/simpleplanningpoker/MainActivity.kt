@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wegielek.simpleplanningpoker.ui.theme.SimplePlanningPokerTheme
-import com.wegielek.simpleplanningpoker.ui.views.MainScreen
-import com.wegielek.simpleplanningpoker.viewmodels.AccountViewModel
+import com.wegielek.simpleplanningpoker.presentation.ui.theme.SimplePlanningPokerTheme
+import com.wegielek.simpleplanningpoker.presentation.ui.views.MainScreen
+import com.wegielek.simpleplanningpoker.presentation.viewmodels.AccountViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,8 +53,8 @@ fun AccountScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        user?.username?.let { Text("Username: " + it) }
-        user?.profile?.nickname?.let { Text("Nickname: " + it) }
+        user?.username?.let { Text("Username: $it") }
+        user?.profile?.nickname?.let { Text("Nickname: $it") }
     }
 }
 

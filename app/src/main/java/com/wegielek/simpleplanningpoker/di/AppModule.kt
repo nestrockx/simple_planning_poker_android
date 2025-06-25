@@ -1,8 +1,8 @@
 package com.wegielek.simpleplanningpoker.di
 
 import android.content.Context
-import com.wegielek.simpleplanningpoker.data.api.AuthInterceptor
-import com.wegielek.simpleplanningpoker.data.api.PokerApiService
+import com.wegielek.simpleplanningpoker.data.remote.AuthInterceptor
+import com.wegielek.simpleplanningpoker.data.remote.PokerApiService
 import com.wegielek.simpleplanningpoker.prefs.Preferences.Companion.getTokenFromStorage
 import dagger.Module
 import dagger.Provides
