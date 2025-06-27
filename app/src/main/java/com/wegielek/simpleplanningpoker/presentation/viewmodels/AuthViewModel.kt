@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wegielek.simpleplanningpoker.data.repository.PokerRepositoryImpl
+import com.wegielek.simpleplanningpoker.domain.usecases.auth.GuestLoginUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.auth.LoginUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.auth.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -24,7 +26,9 @@ sealed class AuthState {
 class AuthViewModel
     @Inject
     constructor(
-        private val repository: PokerRepositoryImpl,
+        private val loginUseCase: LoginUseCase,
+        private val registerUseCase: RegisterUseCase,
+        private val guestLoginUseCase: GuestLoginUseCase,
     ) : ViewModel() {
         var loginResult by mutableStateOf(false)
             private set
@@ -59,15 +63,27 @@ class AuthViewModel
             isPasswordVisible = !isPasswordVisible
         }
 
-        fun toggleAuthForm() {
-            authState = AuthState.Register
+        fun setAuthForm(authState: AuthState) {
+            this.authState = authState
+        }
+
+        fun clearLoginResult() {
+            loginResult = false
+        }
+
+        fun clearGuestLoginResult() {
+            guestLoginResult = false
+        }
+
+        fun clearRegisterResult() {
+            registerResult = false
         }
 
         fun guestLogin() {
             viewModelScope.launch {
                 try {
-                    Log.d("AuthViewModel", "Logging in with username: $username, password: $password")
-                    guestLoginResult = repository.guestLogin(nickname = nickname)
+                    Log.d("AuthViewModel", "Logging in with nickname: $nickname")
+                    guestLoginResult = guestLoginUseCase(nickname)
                 } catch (e: HttpException) {
                     Log.e("AuthViewModel", "Login failed", e)
                 }
@@ -77,9 +93,9 @@ class AuthViewModel
         fun login() {
             viewModelScope.launch {
                 try {
-                    Log.d("AuthViewModel", "Logging in with username: $username, password: $password")
                     if (username.isNotEmpty() && password.isNotEmpty()) {
-                        loginResult = repository.login(username = username, password = password)
+                        Log.d("AuthViewModel", "Logging in with username: $username")
+                        loginResult = loginUseCase(username, password)
                     }
                 } catch (e: HttpException) {
                     Log.e("AuthViewModel", "Login failed", e)
@@ -90,8 +106,13 @@ class AuthViewModel
         fun register() {
             viewModelScope.launch {
                 try {
-                    Log.d("AuthViewModel", "Registering with username: $username, nickname: $nickname, password: $password")
-                    registerResult = repository.register(username = username, nickname = nickname, password = password)
+                    if (username.isNotEmpty() && nickname.isNotEmpty() && password.isNotEmpty()) {
+                        Log.d(
+                            "AuthViewModel",
+                            "Registering with username: $username, nickname: $nickname",
+                        )
+                        registerResult = registerUseCase(username, nickname, password)
+                    }
                 } catch (e: HttpException) {
                     Log.e("AuthViewModel", "Registration failed", e)
                 }

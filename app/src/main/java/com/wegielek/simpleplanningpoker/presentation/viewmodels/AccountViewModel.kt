@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wegielek.simpleplanningpoker.data.repository.PokerRepositoryImpl
-import com.wegielek.simpleplanningpoker.domain.models.ParticipantUser
+import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

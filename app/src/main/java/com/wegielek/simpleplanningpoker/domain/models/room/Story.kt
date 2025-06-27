@@ -1,4 +1,4 @@
-package com.wegielek.simpleplanningpoker.domain.models
+package com.wegielek.simpleplanningpoker.domain.models.room
 
 import java.time.OffsetDateTime
 

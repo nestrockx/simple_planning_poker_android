@@ -20,7 +20,7 @@ import com.wegielek.simpleplanningpoker.presentation.ui.views.room.RoomScreen
 
 @Composable
 fun MainScreen(navController: NavHostController = rememberNavController()) {
-    val startDestination = "auth"
+    val startDestination = "room"
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) },
         modifier =
@@ -36,7 +36,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
             NavHost(navController = navController, startDestination = startDestination) {
                 composable("auth") {
                     AuthScreen {
-                        navController.navigate("create_join_room")
+                        navController.navigate("account")
                     }
                 }
                 composable("create_join_room") {

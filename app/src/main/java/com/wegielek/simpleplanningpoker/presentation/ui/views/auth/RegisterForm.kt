@@ -73,7 +73,7 @@ fun RegistrationForm(
         OutlinedTextField(
             value = nickname,
             onValueChange = { viewModel.onNicknameChanged(it) },
-            label = { Text("Nickname") },
+            label = { Text("Displayname") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )

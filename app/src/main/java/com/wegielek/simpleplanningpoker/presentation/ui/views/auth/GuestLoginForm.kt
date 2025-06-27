@@ -46,19 +46,19 @@ fun GuestLoginForm(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Register", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text("Guest Login", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = nickname,
             onValueChange = { viewModel.onNicknameChanged(it) },
-            label = { Text("Nickname") },
+            label = { Text("Displayname") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             colors =
@@ -68,7 +68,7 @@ fun GuestLoginForm(
                 ),
             onClick = { onGuestLoginClick(nickname) },
         ) {
-            Text("Register", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
+            Text("Continue", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
         }
     }
 }

@@ -72,7 +72,7 @@ sealed class Screen(
 ) {
     object Account : Screen("account", "Account", { Icons.Default.ManageAccounts })
 
-    object CreateJoinRoom : Screen(
+    object Share : Screen(
         "share",
         "Share",
         { Icons.Default.Share },
@@ -81,6 +81,6 @@ sealed class Screen(
     object Room : Screen("room", "Room", { ImageVector.vectorResource(R.drawable.ic_playing_cards) })
 
     companion object {
-        val bottomNavItems = listOf(CreateJoinRoom, Room, Account)
+        val bottomNavItems = listOf(Share, Room, Account)
     }
 }

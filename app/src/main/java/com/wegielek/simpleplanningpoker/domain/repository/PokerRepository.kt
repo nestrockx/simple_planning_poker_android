@@ -1,9 +1,9 @@
 package com.wegielek.simpleplanningpoker.domain.repository
 
-import com.wegielek.simpleplanningpoker.domain.models.JoinRoomResponse
-import com.wegielek.simpleplanningpoker.domain.models.ParticipantUser
-import com.wegielek.simpleplanningpoker.domain.models.Room
-import com.wegielek.simpleplanningpoker.domain.models.RoomResponse
+import com.wegielek.simpleplanningpoker.domain.models.room.JoinRoomResponse
+import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
+import com.wegielek.simpleplanningpoker.domain.models.room.Room
+import com.wegielek.simpleplanningpoker.domain.models.room.RoomResponse
 
 interface PokerRepository {
     suspend fun login(

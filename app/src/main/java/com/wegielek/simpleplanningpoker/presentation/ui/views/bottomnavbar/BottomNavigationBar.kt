@@ -96,7 +96,7 @@ fun BottomNavigationBar(navController: NavController) {
                     onClick = {
                         if (currentRoute != screen.route) {
                             navController.navigate(screen.route) {
-                                popUpTo(Screen.CreateJoinRoom.route) { saveState = true }
+                                popUpTo(Screen.Share.route) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }

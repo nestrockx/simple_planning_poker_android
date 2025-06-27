@@ -14,4 +14,8 @@ val GreenAccent = Color(0xFF529A55)
 
 val Black = Color(0xFF000000)
 
+val LightGray = Color(0xFF8A8A8A)
+
+val DarkGray = Color(0xFF444444)
+
 val White = Color(0xFFFFFFFF)

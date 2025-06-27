@@ -3,10 +3,10 @@ package com.wegielek.simpleplanningpoker.presentation.ui.views.auth
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AuthViewModel
+import com.wegielek.simpleplanningpoker.utils.ScreenUtils.Companion.pxToDp
+import kotlin.math.min
 
 @Composable
 fun LoginForm(
@@ -37,11 +40,18 @@ fun LoginForm(
     val password = viewModel.password
     val isPasswordVisible = viewModel.isPasswordVisible
 
+    val verticalScreenWidth =
+        min(
+            LocalWindowInfo.current.containerSize.width,
+            LocalWindowInfo.current.containerSize.height,
+        )
+    val horizontalPadding = 24.dp
+
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
-                .padding(24.dp),
+                .width(pxToDp(verticalScreenWidth))
+                .padding(horizontalPadding),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

@@ -1,20 +1,21 @@
 package com.wegielek.simpleplanningpoker.data.remote
 
-import com.wegielek.simpleplanningpoker.domain.models.JoinRoomResponse
-import com.wegielek.simpleplanningpoker.domain.models.ParticipantUser
-import com.wegielek.simpleplanningpoker.domain.models.Profile
-import com.wegielek.simpleplanningpoker.domain.models.Room
-import com.wegielek.simpleplanningpoker.domain.models.RoomResponse
-import com.wegielek.simpleplanningpoker.domain.models.Story
-import com.wegielek.simpleplanningpoker.domain.models.Vote
-import com.wegielek.simpleplanningpoker.domain.models.auth.AuthResponse
-import com.wegielek.simpleplanningpoker.domain.models.auth.GuestLoginRequest
-import com.wegielek.simpleplanningpoker.domain.models.auth.LoginRequest
-import com.wegielek.simpleplanningpoker.domain.models.auth.RegisterRequest
-import com.wegielek.simpleplanningpoker.domain.models.post.CreateRoomRequest
+import com.wegielek.simpleplanningpoker.data.models.auth.AuthResponseDto
+import com.wegielek.simpleplanningpoker.data.models.auth.GuestLoginRequestDto
+import com.wegielek.simpleplanningpoker.data.models.auth.LoginRequestDto
+import com.wegielek.simpleplanningpoker.data.models.auth.RegisterRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.CreateRoomRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.CreateVoteRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.UpdateProfileRequestDto
+import com.wegielek.simpleplanningpoker.data.models.room.JoinRoomResponseDto
+import com.wegielek.simpleplanningpoker.data.models.room.ParticipantUserDto
+import com.wegielek.simpleplanningpoker.data.models.room.RoomDto
+import com.wegielek.simpleplanningpoker.data.models.room.RoomResponseDto
+import com.wegielek.simpleplanningpoker.data.models.room.StoryDto
+import com.wegielek.simpleplanningpoker.data.models.room.VoteDto
 import com.wegielek.simpleplanningpoker.domain.models.post.CreateStoryRequest
-import com.wegielek.simpleplanningpoker.domain.models.post.CreateVoteRequest
-import com.wegielek.simpleplanningpoker.domain.models.post.UpdateProfileRequest
+import com.wegielek.simpleplanningpoker.domain.models.room.Profile
+import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -25,65 +26,65 @@ interface PokerApiService {
     // Auth
     @POST("/auth/login/")
     suspend fun login(
-        @Body loginRequest: LoginRequest,
-    ): AuthResponse
+        @Body loginRequest: LoginRequestDto,
+    ): AuthResponseDto
 
     @POST("/auth/register/")
     suspend fun register(
-        @Body registerRequest: RegisterRequest,
-    ): AuthResponse
+        @Body registerRequest: RegisterRequestDto,
+    ): AuthResponseDto
 
     @POST("/auth/guestlogin/")
     suspend fun guestLogin(
-        @Body guestLoginRequest: GuestLoginRequest,
-    ): AuthResponse
+        @Body guestLoginRequest: GuestLoginRequestDto,
+    ): AuthResponseDto
 
     @POST("/auth/logout/")
     suspend fun logout()
 
     // User
     @GET("/api/userinfo/")
-    suspend fun getUserInfo(): ParticipantUser
+    suspend fun getUserInfo(): ParticipantUserDto
 
     @GET("/api/users/{user_id}/")
     suspend fun getUserInfo(
         @Path("user_id") user_id: Int,
-    ): ParticipantUser
+    ): ParticipantUserDto
 
     // Room
     @GET("/api/rooms/")
-    suspend fun getRooms(): RoomResponse
+    suspend fun getRooms(): RoomResponseDto
 
     @POST("/api/rooms/")
     suspend fun createRoom(
-        @Body room: CreateRoomRequest,
-    ): Room
+        @Body room: CreateRoomRequestDto,
+    ): RoomDto
 
     @GET("/api/rooms/{code}/")
     suspend fun getRoom(
         @Path("code") code: String,
-    ): Room
+    ): RoomDto
 
     @GET("/api/rooms/{code}/join/")
     suspend fun joinRoom(
         @Path("code") code: String,
-    ): JoinRoomResponse
+    ): JoinRoomResponseDto
 
     // Story
     @POST("/api/stories/")
     suspend fun createStory(
         @Body story: CreateStoryRequest,
-    ): Story
+    ): StoryDto
 
     @GET("/api/stories/{room_id}/")
     suspend fun getRoomStory(
         @Path("room_id") room_id: Int,
-    ): Story
+    ): StoryDto
 
     @GET("/api/stories/{pk}/")
     suspend fun getStory(
         @Path("pk") pk: Int,
-    ): Story
+    ): StoryDto
 
     @DELETE("/api/stories/{pk}/delete")
     suspend fun deleteStory(
@@ -93,11 +94,11 @@ interface PokerApiService {
     // Vote
     @POST("/api/votes/")
     suspend fun createVote(
-        @Body vote: CreateVoteRequest,
+        @Body vote: CreateVoteRequestDto,
     )
 
     @GET("/api/votes/")
-    suspend fun getVotes(): List<Vote>
+    suspend fun getVotes(): List<VoteDto>
 
     @GET("/api/votes/{story_id}/")
     suspend fun getVote(
@@ -110,6 +111,10 @@ interface PokerApiService {
     // Profile
     @POST("/api/profile/")
     suspend fun updateNickname(
-        @Body profile: UpdateProfileRequest,
+        @Body profile: UpdateProfileRequestDto,
     ): Profile
+
+    // empty
+    @GET("/api/empty/")
+    suspend fun empty(): Unit
 }

@@ -1,15 +1,15 @@
 package com.wegielek.simpleplanningpoker.data.repository
 
 import android.content.Context
+import com.wegielek.simpleplanningpoker.data.models.auth.GuestLoginRequestDto
+import com.wegielek.simpleplanningpoker.data.models.auth.LoginRequestDto
+import com.wegielek.simpleplanningpoker.data.models.auth.RegisterRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.CreateRoomRequestDto
 import com.wegielek.simpleplanningpoker.data.remote.PokerApiService
-import com.wegielek.simpleplanningpoker.domain.models.JoinRoomResponse
-import com.wegielek.simpleplanningpoker.domain.models.ParticipantUser
-import com.wegielek.simpleplanningpoker.domain.models.Room
-import com.wegielek.simpleplanningpoker.domain.models.RoomResponse
-import com.wegielek.simpleplanningpoker.domain.models.auth.GuestLoginRequest
-import com.wegielek.simpleplanningpoker.domain.models.auth.LoginRequest
-import com.wegielek.simpleplanningpoker.domain.models.auth.RegisterRequest
-import com.wegielek.simpleplanningpoker.domain.models.post.CreateRoomRequest
+import com.wegielek.simpleplanningpoker.domain.models.room.JoinRoomResponse
+import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
+import com.wegielek.simpleplanningpoker.domain.models.room.Room
+import com.wegielek.simpleplanningpoker.domain.models.room.RoomResponse
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -27,7 +27,8 @@ class PokerRepositoryImpl
             password: String,
         ): Boolean =
             pokerApiService
-                .login(LoginRequest(username, password))
+                .login(LoginRequestDto(username, password))
+                .toDomain()
                 .also {
                     Preferences.saveTokenToStorage(context, it.accessToken)
                 }.accessToken
@@ -39,7 +40,8 @@ class PokerRepositoryImpl
             password: String,
         ): Boolean =
             pokerApiService
-                .register(RegisterRequest(username, nickname, password))
+                .register(RegisterRequestDto(username, nickname, password))
+                .toDomain()
                 .also {
                     Preferences.saveTokenToStorage(context, it.accessToken)
                 }.accessToken
@@ -47,7 +49,8 @@ class PokerRepositoryImpl
 
         override suspend fun guestLogin(nickname: String): Boolean =
             pokerApiService
-                .guestLogin(GuestLoginRequest(nickname))
+                .guestLogin(GuestLoginRequestDto(nickname))
+                .toDomain()
                 .also {
                     Preferences.saveTokenToStorage(context, it.accessToken)
                 }.accessToken
@@ -56,23 +59,24 @@ class PokerRepositoryImpl
         override suspend fun logout() = pokerApiService.logout()
 
         // User
-        override suspend fun getUserInfo(): ParticipantUser = pokerApiService.getUserInfo()
+        override suspend fun getUserInfo(): ParticipantUser = pokerApiService.getUserInfo().toDomain()
 
         // Room
-        override suspend fun getRooms(): RoomResponse = pokerApiService.getRooms()
+        override suspend fun getRooms(): RoomResponse = pokerApiService.getRooms().toDomain()
 
-        override suspend fun getRoom(code: String): Room = pokerApiService.getRoom(code)
+        override suspend fun getRoom(code: String): Room = pokerApiService.getRoom(code).toDomain()
 
-        override suspend fun joinRoom(code: String): JoinRoomResponse = pokerApiService.joinRoom(code)
+        override suspend fun joinRoom(code: String): JoinRoomResponse = pokerApiService.joinRoom(code).toDomain()
 
         override suspend fun createRoom(
             name: String,
             type: String,
         ): Room =
-            pokerApiService.createRoom(
-                CreateRoomRequest(
-                    name,
-                    type,
-                ),
-            )
+            pokerApiService
+                .createRoom(
+                    CreateRoomRequestDto(
+                        name,
+                        type,
+                    ),
+                ).toDomain()
     }
