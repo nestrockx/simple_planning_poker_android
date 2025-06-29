@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -83,7 +84,11 @@ fun AuthScreen(
     ) {
         Column(
             modifier =
-                Modifier.align(Alignment.Center).verticalScroll(scrollState).padding(end = padding),
+                Modifier
+                    .align(Alignment.Center)
+                    .verticalScroll(scrollState)
+                    .padding(end = padding)
+                    .imePadding(),
         ) {
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 val drawable: Int =
@@ -95,8 +100,8 @@ fun AuthScreen(
                 Image(
                     painter = painterResource(id = drawable),
                     contentDescription = "Simple poker Logo",
-                    modifier = Modifier.size(150.dp), // optional size
-                    contentScale = ContentScale.Fit, // optional scaling
+                    modifier = Modifier.size(150.dp),
+                    contentScale = ContentScale.Fit,
                 )
             }
 
@@ -114,7 +119,7 @@ fun AuthScreen(
                         modifier =
                             Modifier.wrapContentSize().border(
                                 width = 1.dp,
-                                color = MaterialTheme.colorScheme.secondary,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 shape = RoundedCornerShape(8.dp),
                             ),
                     ) {

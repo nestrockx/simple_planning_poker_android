@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,11 +59,11 @@ fun GuestLoginForm(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.secondary,
-                ),
+//            colors =
+//                ButtonDefaults.buttonColors(
+//                    containerColor = MaterialTheme.colorScheme.primary,
+//                    contentColor = MaterialTheme.colorScheme.secondary,
+//                ),
             onClick = { onGuestLoginClick(nickname) },
         ) {
             Text("Continue", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))

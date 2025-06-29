@@ -30,6 +30,10 @@ class AuthViewModel
         private val registerUseCase: RegisterUseCase,
         private val guestLoginUseCase: GuestLoginUseCase,
     ) : ViewModel() {
+        companion object {
+            private const val LOG_TAG = "AuthViewModel"
+        }
+
         var loginResult by mutableStateOf(false)
             private set
         var guestLoginResult by mutableStateOf(false)
@@ -79,26 +83,15 @@ class AuthViewModel
             registerResult = false
         }
 
-        fun guestLogin() {
-            viewModelScope.launch {
-                try {
-                    Log.d("AuthViewModel", "Logging in with nickname: $nickname")
-                    guestLoginResult = guestLoginUseCase(nickname)
-                } catch (e: HttpException) {
-                    Log.e("AuthViewModel", "Login failed", e)
-                }
-            }
-        }
-
         fun login() {
             viewModelScope.launch {
                 try {
                     if (username.isNotEmpty() && password.isNotEmpty()) {
-                        Log.d("AuthViewModel", "Logging in with username: $username")
+                        Log.d(LOG_TAG, "Logging in with username: $username")
                         loginResult = loginUseCase(username, password)
                     }
                 } catch (e: HttpException) {
-                    Log.e("AuthViewModel", "Login failed", e)
+                    Log.e(LOG_TAG, "Login failed", e)
                 }
             }
         }
@@ -108,13 +101,24 @@ class AuthViewModel
                 try {
                     if (username.isNotEmpty() && nickname.isNotEmpty() && password.isNotEmpty()) {
                         Log.d(
-                            "AuthViewModel",
+                            LOG_TAG,
                             "Registering with username: $username, nickname: $nickname",
                         )
                         registerResult = registerUseCase(username, nickname, password)
                     }
                 } catch (e: HttpException) {
-                    Log.e("AuthViewModel", "Registration failed", e)
+                    Log.e(LOG_TAG, "Registration failed", e)
+                }
+            }
+        }
+
+        fun guestLogin() {
+            viewModelScope.launch {
+                try {
+                    Log.d(LOG_TAG, "Logging in with nickname: $nickname")
+                    guestLoginResult = guestLoginUseCase(nickname)
+                } catch (e: HttpException) {
+                    Log.e(LOG_TAG, "Guest login failed", e)
                 }
             }
         }

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -31,11 +32,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        target {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            }
+        }
     }
     buildFeatures {
         compose = true
@@ -43,6 +48,11 @@ android {
 }
 
 dependencies {
+    // Desugar
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Serialization
+    implementation(libs.kotlinx.serialization.json)
 
     // Material icons
     implementation(libs.androidx.material.icons.extended)
@@ -50,7 +60,7 @@ dependencies {
     // Core OkHttp
     implementation(libs.okhttp)
 
-    // Optional: Logging interceptor for debugging HTTP requests/responses
+    // Interceptor
     implementation(libs.logging.interceptor)
 
     // Retrofit

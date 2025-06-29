@@ -1,10 +1,14 @@
 package com.wegielek.simpleplanningpoker.presentation.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wegielek.simpleplanningpoker.data.repository.PokerRepositoryImpl
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
+import com.wegielek.simpleplanningpoker.domain.usecases.UserInfoUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +19,16 @@ import javax.inject.Inject
 class AccountViewModel
     @Inject
     constructor(
-        private val repository: PokerRepositoryImpl,
+        private val userInfoUseCase: UserInfoUseCase,
+        private val logoutUseCase: LogoutUseCase,
     ) : ViewModel() {
+        companion object {
+            private const val LOG_TAG = "AccountViewModel"
+        }
+
+        var isLoggedOut by mutableStateOf(false)
+            private set
+
         private val _user = MutableStateFlow<ParticipantUser?>(null)
         val user: StateFlow<ParticipantUser?> = _user
 
@@ -26,14 +38,26 @@ class AccountViewModel
 
         private fun fetchUserInfo() {
             viewModelScope.launch {
-                _user.value = repository.getUserInfo()
-                Log.d(
-                    "Rooms: ",
-                    repository
-                        .getRooms()
-                        .results.size
-                        .toString(),
-                )
+                Log.d(LOG_TAG, "Fetching user data")
+                _user.value = userInfoUseCase()
+//                Log.d(
+//                    "Rooms: ",
+//                    repository
+//                        .getRooms()
+//                        .results.size
+//                        .toString(),
+//                )
             }
+        }
+
+        fun logout() {
+            viewModelScope.launch {
+                logoutUseCase()
+                isLoggedOut = true
+            }
+        }
+
+        fun clearLogout() {
+            isLoggedOut = false
         }
     }

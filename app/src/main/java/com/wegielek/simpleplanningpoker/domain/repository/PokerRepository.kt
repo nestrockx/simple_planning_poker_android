@@ -3,7 +3,8 @@ package com.wegielek.simpleplanningpoker.domain.repository
 import com.wegielek.simpleplanningpoker.domain.models.room.JoinRoomResponse
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import com.wegielek.simpleplanningpoker.domain.models.room.Room
-import com.wegielek.simpleplanningpoker.domain.models.room.RoomResponse
+import com.wegielek.simpleplanningpoker.domain.models.room.Story
+import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 
 interface PokerRepository {
     suspend fun login(
@@ -23,8 +24,6 @@ interface PokerRepository {
 
     suspend fun getUserInfo(): ParticipantUser
 
-    suspend fun getRooms(): RoomResponse
-
     suspend fun getRoom(code: String): Room
 
     suspend fun joinRoom(code: String): JoinRoomResponse
@@ -33,4 +32,8 @@ interface PokerRepository {
         name: String,
         type: String,
     ): Room
+
+    suspend fun getStories(room_id: Int): List<Story>
+
+    suspend fun getVotes(story_id: Int): List<Vote>
 }

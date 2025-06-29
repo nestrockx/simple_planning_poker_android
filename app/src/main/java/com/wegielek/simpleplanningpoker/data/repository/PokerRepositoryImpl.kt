@@ -9,7 +9,8 @@ import com.wegielek.simpleplanningpoker.data.remote.PokerApiService
 import com.wegielek.simpleplanningpoker.domain.models.room.JoinRoomResponse
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import com.wegielek.simpleplanningpoker.domain.models.room.Room
-import com.wegielek.simpleplanningpoker.domain.models.room.RoomResponse
+import com.wegielek.simpleplanningpoker.domain.models.room.Story
+import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,7 +20,7 @@ class PokerRepositoryImpl
     @Inject
     constructor(
         private val pokerApiService: PokerApiService,
-        @ApplicationContext private val context: Context,
+        @param:ApplicationContext private val context: Context,
     ) : PokerRepository {
         // Auth
         override suspend fun login(
@@ -62,8 +63,6 @@ class PokerRepositoryImpl
         override suspend fun getUserInfo(): ParticipantUser = pokerApiService.getUserInfo().toDomain()
 
         // Room
-        override suspend fun getRooms(): RoomResponse = pokerApiService.getRooms().toDomain()
-
         override suspend fun getRoom(code: String): Room = pokerApiService.getRoom(code).toDomain()
 
         override suspend fun joinRoom(code: String): JoinRoomResponse = pokerApiService.joinRoom(code).toDomain()
@@ -73,10 +72,16 @@ class PokerRepositoryImpl
             type: String,
         ): Room =
             pokerApiService
-                .createRoom(
-                    CreateRoomRequestDto(
-                        name,
-                        type,
-                    ),
-                ).toDomain()
+                .createRoom(CreateRoomRequestDto(name, type))
+                .toDomain()
+
+        override suspend fun getStories(room_id: Int): List<Story> =
+            pokerApiService.getRoomStories(room_id).map {
+                it.toDomain()
+            }
+
+        override suspend fun getVotes(story_id: Int): List<Vote> =
+            pokerApiService.getVotes(story_id).map {
+                it.toDomain()
+            }
     }

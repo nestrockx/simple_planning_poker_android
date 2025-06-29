@@ -9,13 +9,11 @@ import com.wegielek.simpleplanningpoker.data.models.post.CreateVoteRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.UpdateProfileRequestDto
 import com.wegielek.simpleplanningpoker.data.models.room.JoinRoomResponseDto
 import com.wegielek.simpleplanningpoker.data.models.room.ParticipantUserDto
+import com.wegielek.simpleplanningpoker.data.models.room.ProfileDto
 import com.wegielek.simpleplanningpoker.data.models.room.RoomDto
-import com.wegielek.simpleplanningpoker.data.models.room.RoomResponseDto
 import com.wegielek.simpleplanningpoker.data.models.room.StoryDto
 import com.wegielek.simpleplanningpoker.data.models.room.VoteDto
 import com.wegielek.simpleplanningpoker.domain.models.post.CreateStoryRequest
-import com.wegielek.simpleplanningpoker.domain.models.room.Profile
-import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -52,9 +50,6 @@ interface PokerApiService {
     ): ParticipantUserDto
 
     // Room
-    @GET("/api/rooms/")
-    suspend fun getRooms(): RoomResponseDto
-
     @POST("/api/rooms/")
     suspend fun createRoom(
         @Body room: CreateRoomRequestDto,
@@ -77,9 +72,9 @@ interface PokerApiService {
     ): StoryDto
 
     @GET("/api/stories/{room_id}/")
-    suspend fun getRoomStory(
+    suspend fun getRoomStories(
         @Path("room_id") room_id: Int,
-    ): StoryDto
+    ): List<StoryDto>
 
     @GET("/api/stories/{pk}/")
     suspend fun getStory(
@@ -97,13 +92,10 @@ interface PokerApiService {
         @Body vote: CreateVoteRequestDto,
     )
 
-    @GET("/api/votes/")
-    suspend fun getVotes(): List<VoteDto>
-
     @GET("/api/votes/{story_id}/")
-    suspend fun getVote(
+    suspend fun getVotes(
         @Path("story_id") story_id: Int,
-    ): Vote
+    ): List<VoteDto>
 
     @DELETE("/api/votes/{story_id}/delete/")
     suspend fun deleteVote()
@@ -112,7 +104,7 @@ interface PokerApiService {
     @POST("/api/profile/")
     suspend fun updateNickname(
         @Body profile: UpdateProfileRequestDto,
-    ): Profile
+    ): ProfileDto
 
     // empty
     @GET("/api/empty/")

@@ -11,7 +11,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.wegielek.simpleplanningpoker.AccountScreen
 import com.wegielek.simpleplanningpoker.CreateJoinRoomScreen
 import com.wegielek.simpleplanningpoker.ShareScreen
 import com.wegielek.simpleplanningpoker.presentation.ui.views.auth.AuthScreen
@@ -51,7 +50,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 }
                 composable("account") {
                     AccountScreen {
-                        navController.navigate("")
+                        navController.navigate("auth")
                     }
                 }
                 composable("share") {
