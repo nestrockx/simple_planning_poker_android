@@ -11,11 +11,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -27,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AuthViewModel
 import com.wegielek.simpleplanningpoker.utils.ScreenUtils.Companion.pxToDp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 @Composable
@@ -34,6 +42,9 @@ fun LoginForm(
     viewModel: AuthViewModel = hiltViewModel(),
     onLoginClick: (String, String) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    var loading by remember { mutableStateOf(false) }
+
     val username = viewModel.username
     val password = viewModel.password
     val isPasswordVisible = viewModel.isPasswordVisible
@@ -44,6 +55,18 @@ fun LoginForm(
             LocalWindowInfo.current.containerSize.height,
         )
     val horizontalPadding = 24.dp
+
+    fun onLogin(
+        username: String,
+        password: String,
+    ) {
+        loading = true
+        onLoginClick(username, password)
+        scope.launch {
+            delay(2000)
+            loading = false
+        }
+    }
 
     Column(
         modifier =
@@ -89,15 +112,14 @@ fun LoginForm(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-//            colors =
-//                ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.secondary,
-//                ),
-            onClick = { onLoginClick(username, password) },
-        ) {
-            Text("Login", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
+        if (!loading) {
+            Button(
+                onClick = { onLogin(username, password) },
+            ) {
+                Text("Login", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
+            }
+        } else {
+            CircularProgressIndicator(modifier = Modifier.padding(vertical = 8.dp))
         }
     }
 }

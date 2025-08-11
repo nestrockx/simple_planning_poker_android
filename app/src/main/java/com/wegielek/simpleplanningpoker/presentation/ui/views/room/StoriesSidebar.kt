@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -40,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
     val logTag = "StoriesSidebar"
+
+    val context = LocalContext.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -178,10 +182,23 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
                     Icon(
                         Icons.Default.Menu,
                         contentDescription = "Menu",
-                        Modifier.size(28.dp),
+                        modifier = Modifier.size(28.dp),
                     )
                 }
                 room.value?.name?.let { Text("Room: $it", fontSize = 20.sp) }
+                Row(
+                    modifier = Modifier.weight(1f).padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    IconButton(onClick = { viewModel.clearRoomCode(context) }) {
+                        Icon(
+                            Icons.Default.Cancel,
+                            contentDescription = "Close",
+                            modifier = Modifier.size(28.dp),
+                        )
+                    }
+                }
             }
         }
     }

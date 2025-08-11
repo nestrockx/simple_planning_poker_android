@@ -5,6 +5,7 @@ import com.wegielek.simpleplanningpoker.data.models.auth.GuestLoginRequestDto
 import com.wegielek.simpleplanningpoker.data.models.auth.LoginRequestDto
 import com.wegielek.simpleplanningpoker.data.models.auth.RegisterRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.CreateRoomRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.CreateStoryRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.CreateVoteRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.UpdateProfileRequestDto
 import com.wegielek.simpleplanningpoker.data.models.room.JoinRoomResponseDto
@@ -68,7 +69,7 @@ interface PokerApiService {
     // Story
     @POST("/api/stories/")
     suspend fun createStory(
-        @Body story: CreateStoryRequest,
+        @Body story: CreateStoryRequestDto,
     ): StoryDto
 
     @GET("/api/stories/{room_id}/")

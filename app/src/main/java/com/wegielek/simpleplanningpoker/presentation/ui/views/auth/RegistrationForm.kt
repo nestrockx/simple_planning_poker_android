@@ -11,11 +11,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -27,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AuthViewModel
 import com.wegielek.simpleplanningpoker.utils.ScreenUtils.Companion.pxToDp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 @Composable
@@ -34,6 +42,9 @@ fun RegistrationForm(
     viewModel: AuthViewModel = hiltViewModel(),
     onRegisterClick: (String, String, String) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    var loading by remember { mutableStateOf(false) }
+
     val username = viewModel.username
     val nickname = viewModel.nickname
     val password = viewModel.password
@@ -45,6 +56,19 @@ fun RegistrationForm(
             LocalWindowInfo.current.containerSize.height,
         )
     val horizontalPadding = 24.dp
+
+    fun onRegister(
+        username: String,
+        nickname: String,
+        password: String,
+    ) {
+        loading = true
+        onRegisterClick(username, nickname, password)
+        scope.launch {
+            delay(2000)
+            loading = false
+        }
+    }
 
     Column(
         modifier =
@@ -100,15 +124,19 @@ fun RegistrationForm(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        if (!loading) {
+            Button(
 //            colors =
 //                ButtonDefaults.buttonColors(
 //                    containerColor = MaterialTheme.colorScheme.primary,
 //                    contentColor = MaterialTheme.colorScheme.secondary,
 //                ),
-            onClick = { onRegisterClick(username, nickname, password) },
-        ) {
-            Text("Register", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
+                onClick = { onRegister(username, nickname, password) },
+            ) {
+                Text("Register", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
+            }
+        } else {
+            CircularProgressIndicator(modifier = Modifier.padding(vertical = 8.dp))
         }
     }
 }

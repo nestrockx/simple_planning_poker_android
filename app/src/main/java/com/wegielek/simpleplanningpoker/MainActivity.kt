@@ -33,13 +33,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CreateJoinRoomScreen(onNavigate: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("CreateJoinRoom")
-    }
-}
-
-@Composable
 fun ShareScreen(onNavigate: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text("Share")
@@ -51,7 +44,11 @@ sealed class Screen(
     val label: String,
     val iconProvider: @Composable () -> ImageVector,
 ) {
-    object Account : Screen("account", "Account", { Icons.Default.ManageAccounts })
+    object Account : Screen(
+        "account",
+        "Account",
+        { Icons.Default.ManageAccounts },
+    )
 
     object Share : Screen(
         "share",
@@ -59,7 +56,11 @@ sealed class Screen(
         { Icons.Default.Share },
     )
 
-    object Room : Screen("room", "Room", { ImageVector.vectorResource(R.drawable.ic_playing_cards) })
+    object Room : Screen(
+        "room",
+        "Room",
+        { ImageVector.vectorResource(R.drawable.ic_playing_cards) },
+    )
 
     companion object {
         val bottomNavItems = listOf(Share, Room, Account)

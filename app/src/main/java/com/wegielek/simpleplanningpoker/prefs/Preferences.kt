@@ -52,5 +52,27 @@ class Preferences {
 
             prefs.edit { putString("access_token", token) }
         }
+
+        fun saveRoomCodeToStorage(
+            context: Context,
+            roomCode: String?,
+        ) {
+            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            prefs.edit {
+                putString("room_code", roomCode)
+            }
+        }
+
+        fun getRoomCodeFromStorage(context: Context): String? {
+            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            return prefs.getString("room_code", null)
+        }
+
+        fun clearRoomCodeFromStorage(context: Context) {
+            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            prefs.edit {
+                remove("room_code")
+            }
+        }
     }
 }

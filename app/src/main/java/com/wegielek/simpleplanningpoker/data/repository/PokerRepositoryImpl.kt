@@ -5,6 +5,7 @@ import com.wegielek.simpleplanningpoker.data.models.auth.GuestLoginRequestDto
 import com.wegielek.simpleplanningpoker.data.models.auth.LoginRequestDto
 import com.wegielek.simpleplanningpoker.data.models.auth.RegisterRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.CreateRoomRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.CreateStoryRequestDto
 import com.wegielek.simpleplanningpoker.data.remote.PokerApiService
 import com.wegielek.simpleplanningpoker.domain.models.room.JoinRoomResponse
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
@@ -73,6 +74,11 @@ class PokerRepositoryImpl
         ): Room =
             pokerApiService
                 .createRoom(CreateRoomRequestDto(name, type))
+                .toDomain()
+
+        override suspend fun createStory(room_id: Int): Story =
+            pokerApiService
+                .createStory(CreateStoryRequestDto(room_id, "Story"))
                 .toDomain()
 
         override suspend fun getStories(room_id: Int): List<Story> =

@@ -2,6 +2,8 @@ package com.wegielek.simpleplanningpoker.di
 
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 import com.wegielek.simpleplanningpoker.domain.repository.WebSocketRepository
+import com.wegielek.simpleplanningpoker.domain.usecases.CreateRoomUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.CreateStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetRoomUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetStoriesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetVotesUseCase
@@ -36,6 +38,12 @@ object UseCaseModule {
 
     @Provides
     fun provideGetRoomUseCase(pokerRepository: PokerRepository): GetRoomUseCase = GetRoomUseCase(pokerRepository)
+
+    @Provides
+    fun provideCreateRoomUseCase(pokerRepository: PokerRepository): CreateRoomUseCase = CreateRoomUseCase(pokerRepository)
+
+    @Provides
+    fun provideCreateStoryUseCase(pokerRepository: PokerRepository): CreateStoryUseCase = CreateStoryUseCase(pokerRepository)
 
     @Provides
     fun provideGetStoriesUseCase(pokerRepository: PokerRepository): GetStoriesUseCase = GetStoriesUseCase(pokerRepository)

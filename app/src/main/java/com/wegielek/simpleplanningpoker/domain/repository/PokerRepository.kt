@@ -33,6 +33,8 @@ interface PokerRepository {
         type: String,
     ): Room
 
+    suspend fun createStory(room_id: Int): Story
+
     suspend fun getStories(room_id: Int): List<Story>
 
     suspend fun getVotes(story_id: Int): List<Vote>
