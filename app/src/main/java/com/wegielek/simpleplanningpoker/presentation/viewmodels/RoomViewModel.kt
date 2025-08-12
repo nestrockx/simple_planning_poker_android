@@ -13,10 +13,12 @@ import com.wegielek.simpleplanningpoker.domain.models.room.Story
 import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 import com.wegielek.simpleplanningpoker.domain.models.websocket.WebSocketMessage
 import com.wegielek.simpleplanningpoker.domain.usecases.CreateRoomUseCase
-import com.wegielek.simpleplanningpoker.domain.usecases.CreateStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetRoomUseCase
-import com.wegielek.simpleplanningpoker.domain.usecases.GetStoriesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetVotesUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.CreateStoryUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.DeleteStoryUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoriesUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +35,8 @@ class RoomViewModel
         private val getRoomUseCase: GetRoomUseCase,
         private val createStoryUseCase: CreateStoryUseCase,
         private val getStoriesUseCase: GetStoriesUseCase,
+        private val getStoryUseCase: GetStoryUseCase,
+        private val deleteStoryUseCase: DeleteStoryUseCase,
         private val getVotesUseCase: GetVotesUseCase,
         private val createRoomUseCase: CreateRoomUseCase,
         private val webSocketUseCase: WebSocketUseCase,
@@ -121,6 +125,7 @@ class RoomViewModel
             viewModelScope.launch {
                 try {
                     if (roomCode.isNotEmpty()) {
+                        Log.d(LOG_TAG, "Fetching room with code: $roomCode")
                         _room.value = getRoomUseCase(roomCode)
                     }
                 } catch (
@@ -157,6 +162,10 @@ class RoomViewModel
             newStoryTitle = newNewStoryTitle
         }
 
+        fun clearNewStoryTitle() {
+            newStoryTitle = ""
+        }
+
         fun onRoomNameChanged(newRoomName: String) {
             roomNameField = newRoomName
         }
@@ -169,10 +178,32 @@ class RoomViewModel
                 try {
                     Log.d(LOG_TAG, "Creating room with name: $name and type: $type")
                     val roomData: Room = createRoomUseCase(name, type)
-                    val storyData: Story = createStoryUseCase(roomData.id)
+                    val storyData: Story = createStoryUseCase(roomData.id, "Story")
                     roomCode = roomData.code
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error creating room: ${e.message}")
+                }
+            }
+        }
+
+        fun createStory() {
+            viewModelScope.launch {
+                try {
+                    if (newStoryTitle.isNotEmpty()) {
+                        val storyData: Story = createStoryUseCase(_room.value!!.id, newStoryTitle)
+                    }
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error creating story: ${e.message}")
+                }
+            }
+        }
+
+        fun deleteStory(pk: Int) {
+            viewModelScope.launch {
+                try {
+                    deleteStoryUseCase(pk)
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error deleting story: ${e.message}")
                 }
             }
         }

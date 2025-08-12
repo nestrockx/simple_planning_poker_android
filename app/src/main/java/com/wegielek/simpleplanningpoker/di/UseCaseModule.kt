@@ -3,15 +3,21 @@ package com.wegielek.simpleplanningpoker.di
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 import com.wegielek.simpleplanningpoker.domain.repository.WebSocketRepository
 import com.wegielek.simpleplanningpoker.domain.usecases.CreateRoomUseCase
-import com.wegielek.simpleplanningpoker.domain.usecases.CreateStoryUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.CreateVoteUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.DeleteVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetRoomUseCase
-import com.wegielek.simpleplanningpoker.domain.usecases.GetStoriesUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.GetUserInfoUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.GetUserUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetVotesUseCase
-import com.wegielek.simpleplanningpoker.domain.usecases.UserInfoUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.UpdateNicknameUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.GuestLoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.RegisterUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.CreateStoryUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.DeleteStoryUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoriesUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import dagger.Module
 import dagger.Provides
@@ -34,7 +40,10 @@ object UseCaseModule {
     fun provideLogoutUseCase(pokerRepository: PokerRepository): LogoutUseCase = LogoutUseCase(pokerRepository)
 
     @Provides
-    fun provideUserInfoUseCase(pokerRepository: PokerRepository): UserInfoUseCase = UserInfoUseCase(pokerRepository)
+    fun provideUserInfoUseCase(pokerRepository: PokerRepository): GetUserInfoUseCase = GetUserInfoUseCase(pokerRepository)
+
+    @Provides
+    fun provideGetUserUseCase(pokerRepository: PokerRepository): GetUserUseCase = GetUserUseCase(pokerRepository)
 
     @Provides
     fun provideGetRoomUseCase(pokerRepository: PokerRepository): GetRoomUseCase = GetRoomUseCase(pokerRepository)
@@ -49,8 +58,23 @@ object UseCaseModule {
     fun provideGetStoriesUseCase(pokerRepository: PokerRepository): GetStoriesUseCase = GetStoriesUseCase(pokerRepository)
 
     @Provides
+    fun provideGetStoryUseCase(pokerRepository: PokerRepository): GetStoryUseCase = GetStoryUseCase(pokerRepository)
+
+    @Provides
+    fun provideDeleteStoryUseCase(pokerRepository: PokerRepository): DeleteStoryUseCase = DeleteStoryUseCase(pokerRepository)
+
+    @Provides
+    fun provideCreateVoteUseCase(pokerRepository: PokerRepository): CreateVoteUseCase = CreateVoteUseCase(pokerRepository)
+
+    @Provides
+    fun provideDeleteVoteUseCase(pokerRepository: PokerRepository): DeleteVoteUseCase = DeleteVoteUseCase(pokerRepository)
+
+    @Provides
     fun provideGetVotesUseCase(pokerRepository: PokerRepository): GetVotesUseCase = GetVotesUseCase(pokerRepository)
 
     @Provides
     fun provideWebSocketUseCase(webSocketRepository: WebSocketRepository): WebSocketUseCase = WebSocketUseCase(webSocketRepository)
+
+    @Provides
+    fun provideUpdateNicknameUseCase(pokerRepository: PokerRepository): UpdateNicknameUseCase = UpdateNicknameUseCase(pokerRepository)
 }

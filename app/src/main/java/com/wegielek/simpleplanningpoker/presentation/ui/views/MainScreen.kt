@@ -11,10 +11,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.wegielek.simpleplanningpoker.ShareScreen
 import com.wegielek.simpleplanningpoker.presentation.ui.views.auth.AuthScreen
 import com.wegielek.simpleplanningpoker.presentation.ui.views.bottomnavbar.BottomNavigationBar
 import com.wegielek.simpleplanningpoker.presentation.ui.views.room.RoomScreen
+import com.wegielek.simpleplanningpoker.presentation.ui.views.room.ShareScreen
 
 @Composable
 fun MainScreen(navController: NavHostController = rememberNavController()) {

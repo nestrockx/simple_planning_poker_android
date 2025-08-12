@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
-import com.wegielek.simpleplanningpoker.domain.usecases.UserInfoUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class AccountViewModel
     @Inject
     constructor(
-        private val userInfoUseCase: UserInfoUseCase,
+        private val getUserInfoUseCase: GetUserInfoUseCase,
         private val logoutUseCase: LogoutUseCase,
     ) : ViewModel() {
         companion object {
@@ -39,7 +39,7 @@ class AccountViewModel
         private fun fetchUserInfo() {
             viewModelScope.launch {
                 Log.d(LOG_TAG, "Fetching user data")
-                _user.value = userInfoUseCase()
+                _user.value = getUserInfoUseCase()
 //                Log.d(
 //                    "Rooms: ",
 //                    repository

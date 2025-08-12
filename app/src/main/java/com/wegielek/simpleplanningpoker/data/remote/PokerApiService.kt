@@ -7,6 +7,7 @@ import com.wegielek.simpleplanningpoker.data.models.auth.RegisterRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.CreateRoomRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.CreateStoryRequestDto
 import com.wegielek.simpleplanningpoker.data.models.post.CreateVoteRequestDto
+import com.wegielek.simpleplanningpoker.data.models.post.CreateVoteResponseDto
 import com.wegielek.simpleplanningpoker.data.models.post.UpdateProfileRequestDto
 import com.wegielek.simpleplanningpoker.data.models.room.JoinRoomResponseDto
 import com.wegielek.simpleplanningpoker.data.models.room.ParticipantUserDto
@@ -14,7 +15,6 @@ import com.wegielek.simpleplanningpoker.data.models.room.ProfileDto
 import com.wegielek.simpleplanningpoker.data.models.room.RoomDto
 import com.wegielek.simpleplanningpoker.data.models.room.StoryDto
 import com.wegielek.simpleplanningpoker.data.models.room.VoteDto
-import com.wegielek.simpleplanningpoker.domain.models.post.CreateStoryRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -46,7 +46,7 @@ interface PokerApiService {
     suspend fun getUserInfo(): ParticipantUserDto
 
     @GET("/api/users/{user_id}/")
-    suspend fun getUserInfo(
+    suspend fun getUser(
         @Path("user_id") user_id: Int,
     ): ParticipantUserDto
 
@@ -82,7 +82,7 @@ interface PokerApiService {
         @Path("pk") pk: Int,
     ): StoryDto
 
-    @DELETE("/api/stories/{pk}/delete")
+    @DELETE("/api/stories/{pk}/delete/")
     suspend fun deleteStory(
         @Path("pk") pk: Int,
     )
@@ -91,7 +91,7 @@ interface PokerApiService {
     @POST("/api/votes/")
     suspend fun createVote(
         @Body vote: CreateVoteRequestDto,
-    )
+    ): CreateVoteResponseDto
 
     @GET("/api/votes/{story_id}/")
     suspend fun getVotes(
@@ -99,7 +99,9 @@ interface PokerApiService {
     ): List<VoteDto>
 
     @DELETE("/api/votes/{story_id}/delete/")
-    suspend fun deleteVote()
+    suspend fun deleteVote(
+        @Path("story_id") story_id: Int,
+    )
 
     // Profile
     @POST("/api/profile/")
@@ -109,5 +111,5 @@ interface PokerApiService {
 
     // empty
     @GET("/api/empty/")
-    suspend fun empty(): Unit
+    suspend fun empty()
 }

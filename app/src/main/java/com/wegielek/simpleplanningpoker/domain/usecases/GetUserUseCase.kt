@@ -2,8 +2,8 @@ package com.wegielek.simpleplanningpoker.domain.usecases
 
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 
-class GetStoriesUseCase(
+class GetUserUseCase(
     private val repository: PokerRepository,
 ) {
-    suspend operator fun invoke(room_id: Int) = repository.getStories(room_id)
+    suspend operator fun invoke(user_id: Int) = repository.getUser(user_id)
 }

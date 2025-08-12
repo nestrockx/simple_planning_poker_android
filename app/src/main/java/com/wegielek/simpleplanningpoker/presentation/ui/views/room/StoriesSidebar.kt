@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,6 +66,7 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
 
     val density = LocalDensity.current
 
+    val keyboardController = LocalSoftwareKeyboardController.current
     val insets = WindowInsets.ime
     val imeBottom =
         remember {
@@ -78,6 +80,12 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
                 imeBottom.value > 0
             }
         }
+
+    fun onAddStory() {
+        viewModel.createStory()
+        viewModel.clearNewStoryTitle()
+        keyboardController?.hide()
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -112,7 +120,11 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
                                                     Modifier
                                                         .size(30.dp)
                                                         .clickable {
-                                                            Log.d(logTag, "Remove ${item.title}")
+                                                            Log.d(
+                                                                logTag,
+                                                                "Remove ${item.title}",
+                                                            )
+                                                            viewModel.deleteStory(item.id)
                                                         }.padding(4.dp),
                                             )
                                         }
@@ -161,7 +173,7 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                         )
-                        Button(onClick = {}) { Text("Add") }
+                        Button(onClick = { onAddStory() }) { Text("Add") }
                     }
                 }
             }
