@@ -110,6 +110,6 @@ interface PokerApiService {
     ): ProfileDto
 
     // empty
-    @GET("/api/empty/")
-    suspend fun empty()
+//    @GET("/api/empty/")
+//    suspend fun empty()
 }

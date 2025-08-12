@@ -53,6 +53,25 @@ class Preferences {
             prefs.edit { putString("access_token", token) }
         }
 
+        fun clearTokenFromStorage(context: Context) {
+            val masterKey =
+                MasterKey
+                    .Builder(context)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build()
+            val prefs =
+                EncryptedSharedPreferences.create(
+                    context,
+                    "secure_prefs",
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
+                )
+            prefs.edit {
+                remove("access_token")
+            }
+        }
+
         fun saveRoomCodeToStorage(
             context: Context,
             roomCode: String?,

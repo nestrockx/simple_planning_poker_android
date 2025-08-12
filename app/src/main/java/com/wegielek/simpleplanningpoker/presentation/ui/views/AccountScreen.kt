@@ -11,8 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.wegielek.simpleplanningpoker.prefs.Preferences
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AccountViewModel
 
 @Composable
@@ -20,11 +22,13 @@ fun AccountScreen(
     viewModel: AccountViewModel = hiltViewModel(),
     onNavigate: () -> Unit,
 ) {
+    val context = LocalContext.current
     val user = viewModel.user.collectAsState()
 
     LaunchedEffect(viewModel.isLoggedOut) {
         if (viewModel.isLoggedOut) {
             viewModel.clearLogout()
+            Preferences.clearTokenFromStorage(context)
             onNavigate()
         }
     }

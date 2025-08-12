@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import com.wegielek.simpleplanningpoker.domain.usecases.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
+import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
