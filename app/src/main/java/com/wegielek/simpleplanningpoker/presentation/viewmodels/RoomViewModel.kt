@@ -2,6 +2,7 @@ package com.wegielek.simpleplanningpoker.presentation.viewmodels
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -69,8 +70,8 @@ class RoomViewModel
         val messages: StateFlow<List<WebSocketMessage>> = _messages.asStateFlow()
 
         init {
-            fetchRoom()
-//            connectWebSocket()
+//            fetchRoom()
+            connectWebSocket()
         }
 
         fun getRoomCode(context: Context): String {
@@ -114,6 +115,7 @@ class RoomViewModel
 
         override fun onCleared() {
             super.onCleared()
+            Log.d("Websocket", "onCleared")
             webSocketUseCase.disconnect()
         }
 

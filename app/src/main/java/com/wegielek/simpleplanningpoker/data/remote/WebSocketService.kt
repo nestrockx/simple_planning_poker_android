@@ -7,7 +7,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -26,21 +28,29 @@ class WebSocketService
         private val _messages = MutableSharedFlow<WebSocketMessageDto>()
         val messages: SharedFlow<WebSocketMessageDto> = _messages.asSharedFlow()
 
+        private val _isConnected = MutableStateFlow(false)
+        val isConnected: StateFlow<Boolean> = _isConnected
+
         private var webSocket: WebSocket? = null
 
         fun connect(url: String) {
+            println("websocket " + _isConnected.value)
+            if (_isConnected.value) return
+
             val client = OkHttpClient()
             val request =
                 Request
                     .Builder()
                     .url(url)
-                    .addHeader("Authorization", "Token ${getTokenFromStorage(context)}")
+                    .addHeader("Authorization", "Token 86babdcbb9cf17facd8248c2c47d7d2dba8f500f")
                     .build()
+//            ${getTokenFromStorage(context)}
             webSocket = client.newWebSocket(request, this)
         }
 
         fun disconnect() {
             webSocket?.close(1000, "Closing")
+            _isConnected.value = false
         }
 
         fun sendMessage(text: String) {
@@ -63,12 +73,21 @@ class WebSocketService
             }
         }
 
+        override fun onOpen(
+            webSocket: WebSocket,
+            response: Response,
+        ) {
+            println("WebSocket connected")
+            _isConnected.value = true
+        }
+
         override fun onFailure(
             webSocket: WebSocket,
             t: Throwable,
             response: Response?,
         ) {
             println("WebSocket error: ${t.message}")
+            _isConnected.value = false
         }
 
         override fun onClosed(
@@ -77,5 +96,6 @@ class WebSocketService
             reason: String,
         ) {
             println("WebSocket closed: $reason")
+            _isConnected.value = false
         }
     }

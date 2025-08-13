@@ -22,7 +22,7 @@ import com.wegielek.simpleplanningpoker.presentation.ui.views.room.ShareScreen
 @Composable
 fun MainScreen(navController: NavHostController = rememberNavController()) {
     val context: Context = LocalContext.current
-    val startDestination = if (Preferences.getTokenFromStorage(context) != null) "room" else "auth"
+    val startDestination = if (Preferences.getTokenFromStorage(context) != null) "room" else "room"
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) },
         modifier =

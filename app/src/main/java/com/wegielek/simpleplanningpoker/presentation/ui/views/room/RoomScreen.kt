@@ -43,6 +43,7 @@ import com.wegielek.simpleplanningpoker.domain.models.websocket.RevealVotes
 import com.wegielek.simpleplanningpoker.domain.models.websocket.Summon
 import com.wegielek.simpleplanningpoker.domain.models.websocket.VoteUpdate
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
+import org.json.JSONObject
 
 @Composable
 fun RoomScreen(
