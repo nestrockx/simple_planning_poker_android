@@ -52,7 +52,10 @@ import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
+fun StoriesSidebar(
+    viewModel: RoomViewModel = hiltViewModel(),
+    content: @Composable () -> Unit,
+) {
     val logTag = "StoriesSidebar"
 
     val context = LocalContext.current
@@ -85,6 +88,7 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
         viewModel.createStory()
         viewModel.clearNewStoryTitle()
         keyboardController?.hide()
+//        viewModel.send()
     }
 
     ModalNavigationDrawer(
@@ -179,6 +183,7 @@ fun StoriesSidebar(viewModel: RoomViewModel = hiltViewModel()) {
             }
         },
     ) {
+        content()
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {

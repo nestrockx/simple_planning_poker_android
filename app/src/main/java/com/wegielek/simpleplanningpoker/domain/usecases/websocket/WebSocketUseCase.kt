@@ -7,7 +7,9 @@ class WebSocketUseCase(
 ) {
     val incomingMessages = repository.incomingMessages
 
-    fun connect() = repository.connect()
+    val isConnected = repository.isConnected
+
+    fun connect(roomCode: String) = repository.connect(roomCode)
 
     fun disconnect() = repository.disconnect()
 

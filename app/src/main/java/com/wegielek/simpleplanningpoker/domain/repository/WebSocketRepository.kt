@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 interface WebSocketRepository {
     val incomingMessages: Flow<WebSocketMessage>
 
-    fun connect()
+    val isConnected: Flow<Boolean>
+
+    fun connect(roomCode: String)
 
     fun disconnect()
 

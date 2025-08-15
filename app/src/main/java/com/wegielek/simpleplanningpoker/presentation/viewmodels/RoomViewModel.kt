@@ -2,7 +2,6 @@ package com.wegielek.simpleplanningpoker.presentation.viewmodels
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,7 +14,10 @@ import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 import com.wegielek.simpleplanningpoker.domain.models.websocket.WebSocketMessage
 import com.wegielek.simpleplanningpoker.domain.usecases.CreateRoomUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetRoomUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.GetUserInfoUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.GetUserUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetVotesUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.JoinRoomUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.story.CreateStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.story.DeleteStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoriesUseCase
@@ -23,10 +25,13 @@ import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,15 +46,24 @@ class RoomViewModel
         private val getVotesUseCase: GetVotesUseCase,
         private val createRoomUseCase: CreateRoomUseCase,
         private val webSocketUseCase: WebSocketUseCase,
+        private val getUserInfoUseCase: GetUserInfoUseCase,
+        private val getUserUseCase: GetUserUseCase,
+        private val joinRoomUseCase: JoinRoomUseCase,
     ) : ViewModel() {
         companion object {
             private const val LOG_TAG = "RoomViewModel"
         }
 
-        var roomNameField by mutableStateOf("")
+        private var repeat = 0
+        private val repeatLimit = 10
+
+        var isConnected: Boolean by mutableStateOf(false)
             private set
 
         var roomCode: String by mutableStateOf("")
+            private set
+
+        var roomNameField by mutableStateOf("")
             private set
 
         var newStoryTitle: String by mutableStateOf("")
@@ -74,6 +88,7 @@ class RoomViewModel
             connectWebSocket()
         }
 
+        // room code
         fun getRoomCode(context: Context): String {
             if (roomCode.isNotEmpty() && Preferences.getRoomCodeFromStorage(context) != null) return roomCode
 
@@ -98,7 +113,25 @@ class RoomViewModel
             Preferences.clearRoomCodeFromStorage(context)
         }
 
-        private fun connectWebSocket() {
+        fun getStory(pk: Int) {
+            viewModelScope.launch {
+                try {
+                    val story = getStoryUseCase(pk)
+                    Log.d(LOG_TAG, "Story: $story")
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error fetching story: ${e.message}")
+                }
+            }
+        }
+
+        // Websocket init
+        fun connectWebSocket() {
+            viewModelScope.launch {
+                webSocketUseCase.isConnected.collect {
+                    Log.d("WebSocket", "Connected: $it")
+                    isConnected = it
+                }
+            }
             viewModelScope.launch {
                 webSocketUseCase.incomingMessages.collect {
                     Log.d("WebSocket", "Received message: $it")
@@ -106,7 +139,24 @@ class RoomViewModel
                 }
             }
 
-            webSocketUseCase.connect()
+            connect()
+//            webSocketUseCase.connect(roomCode)
+        }
+
+        private fun connect() {
+            viewModelScope.launch {
+                if (!roomCode.isNotEmpty()) {
+                    repeat += 1
+                    if (repeat <= repeatLimit) {
+                        delay(100)
+                        Log.d("Websocket", "Reconnecting...")
+                        connect()
+                    }
+                } else {
+                    repeat = 0
+                    webSocketUseCase.connect(roomCode)
+                }
+            }
         }
 
         fun send(text: String) {
@@ -116,13 +166,19 @@ class RoomViewModel
         override fun onCleared() {
             super.onCleared()
             Log.d("Websocket", "onCleared")
+            disconnectWebsocket()
+        }
+
+        fun disconnectWebsocket() {
             webSocketUseCase.disconnect()
         }
 
+        // Update active story
         fun updateCurrentStory(story: Story) {
             currentStory = story
         }
 
+        // Fetch room data and stories with room code
         fun fetchRoom() {
             viewModelScope.launch {
                 try {
@@ -154,12 +210,14 @@ class RoomViewModel
             }
         }
 
+        // Fetch votes for current story
         fun fetchVotes() {
             viewModelScope.launch {
                 _votes.value = currentStory?.let { getVotesUseCase(it.id) }
             }
         }
 
+        // New Story Input
         fun onNewStoryTitleChanged(newNewStoryTitle: String) {
             newStoryTitle = newNewStoryTitle
         }
@@ -188,11 +246,19 @@ class RoomViewModel
             }
         }
 
+        // Handle stories
         fun createStory() {
             viewModelScope.launch {
                 try {
                     if (newStoryTitle.isNotEmpty()) {
                         val storyData: Story = createStoryUseCase(_room.value!!.id, newStoryTitle)
+                        send(
+                            JSONObject()
+                                .put("action", "add_story")
+                                .put("story_id", storyData.id)
+                                .put("title", storyData.title)
+                                .toString(),
+                        )
                     }
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error creating story: ${e.message}")
@@ -208,5 +274,54 @@ class RoomViewModel
                     Log.e(LOG_TAG, "Error deleting story: ${e.message}")
                 }
             }
+        }
+
+        fun joinRoom() {
+            viewModelScope.launch {
+                try {
+                    joinRoomUseCase(roomCode)
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error joining room: ${e.message}")
+                }
+            }
+        }
+
+        // Handle participants
+        fun addParticipant(participant: ParticipantUser) {
+            _participants.value =
+                (_participants.value ?: emptyList()).let { list ->
+                    if (list.none { it.id == participant.id }) {
+                        list + participant
+                    } else {
+                        Log.d(LOG_TAG, "Participant already exists: ${participant.profile.nickname}")
+                        list
+                    }
+                }
+        }
+
+        fun removeParticipant(id: Int) {
+            _participants.value = _participants.value?.filter { it.id != id }
+        }
+
+        fun getUserInfo() =
+            viewModelScope.async {
+                getUserInfoUseCase()
+            }
+
+        fun getUser(user_id: Int) =
+            viewModelScope.async {
+                getUserUseCase(user_id)
+            }
+
+        fun revealVotes(value: Boolean) {
+            Log.d(LOG_TAG, "Revealing votes: $value")
+            currentStory =
+                currentStory?.copy(
+                    is_revealed = value,
+                )
+        }
+
+        fun clearVotes() {
+            _votes.value = emptyList()
         }
     }

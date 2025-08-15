@@ -1,8 +1,8 @@
 package com.wegielek.simpleplanningpoker.data.remote
 
 import android.content.Context
+import android.util.Log
 import com.wegielek.simpleplanningpoker.data.models.websocket.WebSocketMessageDto
-import com.wegielek.simpleplanningpoker.prefs.Preferences.Companion.getTokenFromStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -29,12 +30,12 @@ class WebSocketService
         val messages: SharedFlow<WebSocketMessageDto> = _messages.asSharedFlow()
 
         private val _isConnected = MutableStateFlow(false)
-        val isConnected: StateFlow<Boolean> = _isConnected
+        val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
 
         private var webSocket: WebSocket? = null
 
         fun connect(url: String) {
-            println("websocket " + _isConnected.value)
+            println("Websocket: " + _isConnected.value)
             if (_isConnected.value) return
 
             val client = OkHttpClient()
@@ -49,11 +50,13 @@ class WebSocketService
         }
 
         fun disconnect() {
+            if (!_isConnected.value) return
             webSocket?.close(1000, "Closing")
             _isConnected.value = false
         }
 
         fun sendMessage(text: String) {
+            Log.d("Websocket", "Sending message: $text")
             webSocket?.send(text)
         }
 
@@ -66,6 +69,7 @@ class WebSocketService
                     ignoreUnknownKeys = true
                     classDiscriminator = "type"
                 }
+            Log.d("WebSocket", "Received message: $text")
             val dto = json.decodeFromString(WebSocketMessageDto.serializer(), text)
 //            _messages.tryEmit(dto)
             CoroutineScope(Dispatchers.IO).launch {

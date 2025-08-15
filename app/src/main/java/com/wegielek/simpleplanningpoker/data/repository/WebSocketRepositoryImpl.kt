@@ -5,6 +5,7 @@ import com.wegielek.simpleplanningpoker.data.remote.WebSocketService
 import com.wegielek.simpleplanningpoker.domain.models.websocket.WebSocketMessage
 import com.wegielek.simpleplanningpoker.domain.repository.WebSocketRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -15,7 +16,12 @@ class WebSocketRepositoryImpl
     ) : WebSocketRepository {
         override val incomingMessages: Flow<WebSocketMessage> = webSocketService.messages.map { it.toDomain() }
 
-        override fun connect() = webSocketService.connect("wss://simple-planning-poker.onrender.com/ws/reveal/JYeokJ/")
+        override val isConnected: Flow<Boolean> = webSocketService.isConnected
+
+        override fun connect(roomCode: String) =
+            webSocketService.connect(
+                "wss://simple-planning-poker.onrender.com/ws/reveal/$roomCode/",
+            )
 
         override fun disconnect() = webSocketService.disconnect()
 

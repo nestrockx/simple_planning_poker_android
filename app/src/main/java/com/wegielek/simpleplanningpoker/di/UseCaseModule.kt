@@ -9,6 +9,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.GetRoomUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetUserUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.GetVotesUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.JoinRoomUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.UpdateNicknameUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.GuestLoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LoginUseCase
@@ -77,4 +78,7 @@ object UseCaseModule {
 
     @Provides
     fun provideUpdateNicknameUseCase(pokerRepository: PokerRepository): UpdateNicknameUseCase = UpdateNicknameUseCase(pokerRepository)
+
+    @Provides
+    fun provideJoinRoomUseCase(pokerRepository: PokerRepository): JoinRoomUseCase = JoinRoomUseCase(pokerRepository)
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +34,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.wegielek.simpleplanningpoker.domain.models.websocket.AddStory
 import com.wegielek.simpleplanningpoker.domain.models.websocket.ParticipantAdd
 import com.wegielek.simpleplanningpoker.domain.models.websocket.ParticipantRemove
@@ -43,7 +46,6 @@ import com.wegielek.simpleplanningpoker.domain.models.websocket.RevealVotes
 import com.wegielek.simpleplanningpoker.domain.models.websocket.Summon
 import com.wegielek.simpleplanningpoker.domain.models.websocket.VoteUpdate
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
-import org.json.JSONObject
 
 @Composable
 fun RoomScreen(
@@ -52,11 +54,42 @@ fun RoomScreen(
 ) {
     val logTag = "RoomScreen"
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_RESUME) {
+                    if (!viewModel.isConnected) {
+                        viewModel.connectWebSocket()
+                    }
+                }
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LaunchedEffect(viewModel.roomCode) {
         Log.d(logTag, "Room code: ${viewModel.roomCode}")
         viewModel.getRoomCode(context)
-        viewModel.fetchRoom()
+        if (viewModel.roomCode.isNotEmpty()) {
+            viewModel.fetchRoom()
+            viewModel.connectWebSocket()
+        } else {
+            viewModel.disconnectWebsocket()
+        }
+    }
+
+    LaunchedEffect(viewModel.isConnected) {
+        if (viewModel.isConnected) {
+            viewModel.joinRoom()
+            val participant = viewModel.getUserInfo().await()
+            Log.d(logTag, "New participant: $participant")
+            viewModel.addParticipant(participant)
+        }
     }
 
     if (viewModel.roomCode.isNotEmpty()) {
@@ -78,12 +111,31 @@ fun RoomScreen(
         // Handle message
         LaunchedEffect(messages.value.lastOrNull()) {
             val message = messages.value.lastOrNull() ?: return@LaunchedEffect
+            Log.d(logTag, "Message: $message")
 
             when (message) {
-                is ParticipantAdd -> Log.d(logTag, "participant add")
-                is ParticipantRemove -> Log.d(logTag, "participant remove")
-                is RevealVotes -> Log.d(logTag, "reveal votes")
-                is ResetVotes -> Log.d(logTag, "reset votes")
+                is ParticipantAdd -> {
+                    Log.d(logTag, "participant add")
+                    val participant = viewModel.getUser(message.participants.id).await()
+                    viewModel.addParticipant(participant)
+                }
+                is ParticipantRemove -> {
+                    Log.d(logTag, "participant remove")
+                    viewModel.removeParticipant(message.participants.id)
+                }
+                is RevealVotes -> {
+                    Log.d(logTag, "reveal votes")
+                    if (currentStory?.id == message.reveal.story_id) {
+                        viewModel.revealVotes(message.reveal.value)
+                    }
+                }
+                is ResetVotes -> {
+                    Log.d(logTag, "reset votes")
+                    if (currentStory?.id == message.reset.story_id) {
+                        viewModel.clearVotes()
+                        viewModel.revealVotes(false)
+                    }
+                }
                 is VoteUpdate -> Log.d(logTag, "vote update")
                 is AddStory -> Log.d(logTag, "add story")
                 is RemoveStory -> Log.d(logTag, "remove story")
@@ -91,98 +143,92 @@ fun RoomScreen(
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(top = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                        participants.value?.let { list ->
-                            items(list, key = { it.id }) { participant ->
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
+        Box(modifier = Modifier.fillMaxSize()) {
+            StoriesSidebar {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxSize().padding(top = 70.dp),
+                ) {
+                    participants.value?.let { list ->
+                        items(list, key = { it.id }) { participant ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            horizontal = 24.dp,
+                                        ).border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(20.dp))
+                                        .padding(24.dp),
+                            ) {
+                                Text(
+                                    participant.profile.nickname,
                                     modifier =
                                         Modifier
                                             .fillMaxWidth()
-                                            .padding(
-                                                horizontal = 24.dp,
-                                            ).border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(20.dp))
-                                            .padding(24.dp),
-                                ) {
-                                    Text(
-                                        participant.profile.nickname,
-                                        modifier =
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f),
-                                    )
-                                    viewModel.currentStory?.let { story ->
-                                        if (story.is_revealed) {
-                                            Box(
-                                                modifier =
-                                                    Modifier
-                                                        .wrapContentSize()
-                                                        .clip(shape = CircleShape)
-                                                        .background(color = MaterialTheme.colorScheme.primary),
-                                            ) {
-                                                votes.value?.let {
-                                                    for (vote in it) {
-                                                        if (vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id) {
-                                                            Text(
-                                                                vote.value,
-                                                                fontSize = 20.sp,
-                                                                fontWeight = FontWeight.Bold,
-                                                                modifier =
-                                                                    Modifier.padding(
-                                                                        vertical = 8.dp,
-                                                                        horizontal = 14.dp,
-                                                                    ),
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
+                                            .weight(1f),
+                                )
+                                viewModel.currentStory?.let { story ->
+                                    if (story.is_revealed) {
+                                        Box(
+                                            modifier =
+                                                Modifier
+                                                    .wrapContentSize()
+                                                    .clip(shape = CircleShape)
+                                                    .background(color = MaterialTheme.colorScheme.primary),
+                                        ) {
                                             votes.value?.let {
                                                 for (vote in it) {
                                                     if (vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id) {
-                                                        voted = true
+                                                        Text(
+                                                            vote.value,
+                                                            fontSize = 20.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            modifier =
+                                                                Modifier.padding(
+                                                                    vertical = 8.dp,
+                                                                    horizontal = 14.dp,
+                                                                ),
+                                                        )
                                                     }
                                                 }
                                             }
-                                            if (voted) {
-                                                Box(
-                                                    modifier =
-                                                        Modifier
-                                                            .size(20.dp)
-                                                            .clip(shape = CircleShape)
-                                                            .background(color = MaterialTheme.colorScheme.primary),
-                                                )
-                                                voted = false
-                                            } else {
-                                                Box(
-                                                    modifier =
-                                                        Modifier
-                                                            .size(20.dp)
-                                                            .clip(shape = CircleShape)
-                                                            .background(color = MaterialTheme.colorScheme.tertiary),
-                                                )
+                                        }
+                                    } else {
+                                        votes.value?.let {
+                                            for (vote in it) {
+                                                if (vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id) {
+                                                    voted = true
+                                                }
                                             }
+                                        }
+                                        if (voted) {
+                                            Box(
+                                                modifier =
+                                                    Modifier
+                                                        .size(20.dp)
+                                                        .clip(shape = CircleShape)
+                                                        .background(color = MaterialTheme.colorScheme.primary),
+                                            )
+                                            voted = false
+                                        } else {
+                                            Box(
+                                                modifier =
+                                                    Modifier
+                                                        .size(20.dp)
+                                                        .clip(shape = CircleShape)
+                                                        .background(color = MaterialTheme.colorScheme.tertiary),
+                                            )
                                         }
                                     }
                                 }
-                                Spacer(modifier = Modifier.padding(4.dp))
                             }
+                            Spacer(modifier = Modifier.padding(4.dp))
                         }
                     }
                 }
             }
-            StoriesSidebar()
         }
     } else {
         RoomJoinCreateScreen { name, type ->

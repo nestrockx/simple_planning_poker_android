@@ -45,7 +45,7 @@ interface PokerApiService {
     @GET("/api/userinfo/")
     suspend fun getUserInfo(): ParticipantUserDto
 
-    @GET("/api/users/{user_id}/")
+    @GET("/api/userinfo/{user_id}/")
     suspend fun getUser(
         @Path("user_id") user_id: Int,
     ): ParticipantUserDto
@@ -61,7 +61,7 @@ interface PokerApiService {
         @Path("code") code: String,
     ): RoomDto
 
-    @GET("/api/rooms/{code}/join/")
+    @POST("/api/rooms/{code}/join/")
     suspend fun joinRoom(
         @Path("code") code: String,
     ): JoinRoomResponseDto
