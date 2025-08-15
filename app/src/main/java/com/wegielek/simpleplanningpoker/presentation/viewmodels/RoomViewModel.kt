@@ -313,6 +313,7 @@ class RoomViewModel
                 getUserUseCase(user_id)
             }
 
+        // Votes
         fun revealVotes(value: Boolean) {
             Log.d(LOG_TAG, "Revealing votes: $value")
             currentStory =
@@ -323,5 +324,55 @@ class RoomViewModel
 
         fun clearVotes() {
             _votes.value = emptyList()
+        }
+
+        fun updateVote(vote: com.wegielek.simpleplanningpoker.domain.models.websocket.Vote) {
+            _votes.value =
+                _votes.value?.map {
+                    if (it.user.username == vote.username) {
+                        it.copy(value = vote.value.toString())
+                    } else {
+                        it
+                    }
+                }
+        }
+
+        // Stories
+        fun addStory(story: com.wegielek.simpleplanningpoker.domain.models.websocket.Story) {
+            _stories.value =
+                _room.value?.let {
+                    (_stories.value ?: emptyList()) +
+                        Story(
+                            story.id,
+                            it.id,
+                            story.title,
+                            false,
+                            story.is_revealed,
+                            "",
+                        )
+                }
+        }
+
+        fun removeStory(story: com.wegielek.simpleplanningpoker.domain.models.websocket.Story) {
+            _stories.value = _stories.value?.filter { it.id != story.id }
+            if (currentStory?.id == story.id && currentStory?.id != _stories.value?.get(0)?.id) {
+                currentStory = _stories.value?.get(0)
+            } else if (currentStory?.id == story.id) {
+                currentStory = _stories.value?.get(1)
+            }
+        }
+
+        fun summon(story: com.wegielek.simpleplanningpoker.domain.models.websocket.Story) {
+            _room.value?.let {
+                currentStory =
+                    Story(
+                        story.id,
+                        it.id,
+                        story.title,
+                        true,
+                        story.is_revealed,
+                        "",
+                    )
+            }
         }
     }

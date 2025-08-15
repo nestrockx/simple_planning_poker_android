@@ -2,6 +2,7 @@ package com.wegielek.simpleplanningpoker.domain.models.websocket
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 sealed class WebSocketMessage {
@@ -66,7 +67,7 @@ data class VoteUpdate(
 data class Vote(
     val story_id: Int,
     val username: String,
-    val value: String,
+    val value: JsonElement,
 )
 
 @Serializable

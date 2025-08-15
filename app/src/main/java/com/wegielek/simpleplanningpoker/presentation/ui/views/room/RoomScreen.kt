@@ -136,10 +136,24 @@ fun RoomScreen(
                         viewModel.revealVotes(false)
                     }
                 }
-                is VoteUpdate -> Log.d(logTag, "vote update")
-                is AddStory -> Log.d(logTag, "add story")
-                is RemoveStory -> Log.d(logTag, "remove story")
-                is Summon -> Log.d(logTag, "summon")
+                is VoteUpdate -> {
+                    Log.d(logTag, "vote update")
+                    if (currentStory?.id == message.vote.story_id) {
+                        viewModel.updateVote(message.vote)
+                    }
+                }
+                is AddStory -> {
+                    Log.d(logTag, "add story")
+                    viewModel.addStory(message.story)
+                }
+                is RemoveStory -> {
+                    Log.d(logTag, "remove story")
+                    viewModel.removeStory(message.story)
+                }
+                is Summon -> {
+                    Log.d(logTag, "summon")
+                    viewModel.summon(message.story)
+                }
             }
         }
 
