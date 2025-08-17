@@ -65,7 +65,7 @@ fun RoomScreen(
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
                     if (!viewModel.isConnected) {
-                        viewModel.connectWebSocket()
+                        viewModel.connectWebSocket(context)
                     }
                 }
             }
@@ -81,7 +81,7 @@ fun RoomScreen(
         viewModel.getRoomCode(context)
         if (viewModel.roomCode.isNotEmpty()) {
             viewModel.fetchRoom()
-            viewModel.connectWebSocket()
+            viewModel.connectWebSocket(context)
         } else {
             viewModel.disconnectWebsocket()
         }

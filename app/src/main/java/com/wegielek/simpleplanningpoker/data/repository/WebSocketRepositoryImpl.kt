@@ -18,10 +18,13 @@ class WebSocketRepositoryImpl
 
         override val isConnected: Flow<Boolean> = webSocketService.isConnected
 
-        override fun connect(roomCode: String) =
-            webSocketService.connect(
-                "wss://simple-planning-poker.onrender.com/ws/reveal/$roomCode/",
-            )
+        override fun connect(
+            roomCode: String,
+            token: String,
+        ) = webSocketService.connect(
+            "wss://simple-planning-poker.onrender.com/ws/reveal/$roomCode/",
+            token,
+        )
 
         override fun disconnect() = webSocketService.disconnect()
 

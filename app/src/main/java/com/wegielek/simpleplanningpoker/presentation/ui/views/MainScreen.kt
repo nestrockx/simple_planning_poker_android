@@ -47,7 +47,7 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 composable("splash") {
                     LaunchedEffect(Unit) {
                         val token = Preferences.getTokenOnce(context)
-                        navController.navigate(if (token != null) "room" else "room") {
+                        navController.navigate(if (token != null) "room" else "auth") {
                             popUpTo("splash") { inclusive = true }
                         }
                     }

@@ -115,7 +115,7 @@ class AuthViewModel
         fun guestLogin() {
             viewModelScope.launch {
                 try {
-                    Log.d(LOG_TAG, "Logging in with nickname: $nickname")
+                    Log.d(LOG_TAG, "Logging : $nickname")
                     guestLoginResult = guestLoginUseCase(nickname)
                 } catch (e: HttpException) {
                     Log.e(LOG_TAG, "Guest login failed", e)

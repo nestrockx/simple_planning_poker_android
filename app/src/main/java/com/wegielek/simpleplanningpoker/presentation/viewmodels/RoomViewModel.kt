@@ -89,7 +89,7 @@ class RoomViewModel
 
         init {
 //            fetchRoom()
-            connectWebSocket()
+//            connectWebSocket()
         }
 
         // room code
@@ -129,7 +129,7 @@ class RoomViewModel
         }
 
         // Websocket init
-        fun connectWebSocket() {
+        fun connectWebSocket(context: Context) {
             viewModelScope.launch {
                 webSocketUseCase.isConnected.collect {
                     Log.d("WebSocket", "Connected: $it")
@@ -143,22 +143,24 @@ class RoomViewModel
                 }
             }
 
-            connect()
+            connect(context)
 //            webSocketUseCase.connect(roomCode)
         }
 
-        private fun connect() {
+        private fun connect(context: Context) {
             viewModelScope.launch {
                 if (!roomCode.isNotEmpty()) {
                     repeat += 1
                     if (repeat <= repeatLimit) {
                         delay(100)
                         Log.d("Websocket", "Reconnecting...")
-                        connect()
+                        connect(context)
                     }
                 } else {
                     repeat = 0
-                    webSocketUseCase.connect(roomCode)
+                    Preferences.getToken(context).collect { token ->
+                        token?.let { webSocketUseCase.connect(roomCode, it) }
+                    }
                 }
             }
         }

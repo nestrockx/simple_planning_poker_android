@@ -9,7 +9,10 @@ class WebSocketUseCase(
 
     val isConnected = repository.isConnected
 
-    fun connect(roomCode: String) = repository.connect(roomCode)
+    fun connect(
+        roomCode: String,
+        token: String,
+    ) = repository.connect(roomCode, token)
 
     fun disconnect() = repository.disconnect()
 

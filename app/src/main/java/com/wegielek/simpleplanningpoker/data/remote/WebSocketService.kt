@@ -34,7 +34,10 @@ class WebSocketService
 
         private var webSocket: WebSocket? = null
 
-        fun connect(url: String) {
+        fun connect(
+            url: String,
+            token: String,
+        ) {
             println("Websocket: " + _isConnected.value)
             if (_isConnected.value) return
 
@@ -43,9 +46,8 @@ class WebSocketService
                 Request
                     .Builder()
                     .url(url)
-                    .addHeader("Authorization", "Token 86babdcbb9cf17facd8248c2c47d7d2dba8f500f")
+                    .addHeader("Authorization", "Token $token")
                     .build()
-//            ${getTokenFromStorage(context)}
             webSocket = client.newWebSocket(request, this)
         }
 

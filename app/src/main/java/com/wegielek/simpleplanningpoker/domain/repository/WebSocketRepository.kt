@@ -9,7 +9,10 @@ interface WebSocketRepository {
 
     val isConnected: Flow<Boolean>
 
-    fun connect(roomCode: String)
+    fun connect(
+        roomCode: String,
+        token: String,
+    )
 
     fun disconnect()
 

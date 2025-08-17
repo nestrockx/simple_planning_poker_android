@@ -2,13 +2,10 @@ package com.wegielek.simpleplanningpoker.prefs
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
 import androidx.core.content.edit
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -16,6 +13,7 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 class Preferences {
     companion object {
@@ -23,16 +21,31 @@ class Preferences {
         private val TOKEN_KEY = stringPreferencesKey("access_token")
 
         // For demo: store key in Android Keystore
+//        private fun getOrCreateSecretKey(): SecretKey {
+// //            val masterKey =
+// //                MasterKey
+// //                    .Builder(context)
+// //                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+// //                    .build()
+//            // In real apps, generate AES key with KeyGenerator and wrap it with masterKey
+//            val keyGen = KeyGenerator.getInstance("AES")
+//            keyGen.init(256)
+//            return keyGen.generateKey()
+//        }
+
         private fun getOrCreateSecretKey(context: Context): SecretKey {
-            val masterKey =
-                MasterKey
-                    .Builder(context)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build()
-            // In real apps, generate AES key with KeyGenerator and wrap it with masterKey
-            val keyGen = KeyGenerator.getInstance("AES")
-            keyGen.init(256)
-            return keyGen.generateKey()
+            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            val keyString = prefs.getString("aes_key", null)
+            return if (keyString != null) {
+                val bytes = Base64.decode(keyString, Base64.DEFAULT)
+                SecretKeySpec(bytes, "AES")
+            } else {
+                val keyGen = KeyGenerator.getInstance("AES")
+                keyGen.init(256)
+                val key = keyGen.generateKey()
+                prefs.edit { putString("aes_key", Base64.encodeToString(key.encoded, Base64.DEFAULT)) }
+                key
+            }
         }
 
         private fun encrypt(
