@@ -20,19 +20,6 @@ class Preferences {
         private val Context.dataStore by preferencesDataStore("secure_prefs")
         private val TOKEN_KEY = stringPreferencesKey("access_token")
 
-        // For demo: store key in Android Keystore
-//        private fun getOrCreateSecretKey(): SecretKey {
-// //            val masterKey =
-// //                MasterKey
-// //                    .Builder(context)
-// //                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-// //                    .build()
-//            // In real apps, generate AES key with KeyGenerator and wrap it with masterKey
-//            val keyGen = KeyGenerator.getInstance("AES")
-//            keyGen.init(256)
-//            return keyGen.generateKey()
-//        }
-
         private fun getOrCreateSecretKey(context: Context): SecretKey {
             val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
             val keyString = prefs.getString("aes_key", null)
