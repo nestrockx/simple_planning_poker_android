@@ -7,9 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
-import com.wegielek.simpleplanningpoker.domain.usecases.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
-import com.wegielek.simpleplanningpoker.prefs.Preferences
+import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,13 +40,6 @@ class AccountViewModel
             viewModelScope.launch {
                 Log.d(LOG_TAG, "Fetching user data")
                 _user.value = getUserInfoUseCase()
-//                Log.d(
-//                    "Rooms: ",
-//                    repository
-//                        .getRooms()
-//                        .results.size
-//                        .toString(),
-//                )
             }
         }
 

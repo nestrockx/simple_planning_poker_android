@@ -52,11 +52,6 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                         }
                     }
                 }
-//                composable("create_join_room") {
-//                    RoomJoinCreateScreen {
-//                        navController.navigate("")
-//                    }
-//                }
                 composable("room") {
                     RoomScreen {
                         navController.navigate("")

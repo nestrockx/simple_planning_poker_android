@@ -1,7 +1,6 @@
 package com.wegielek.simpleplanningpoker.data.models.room
 
 import com.wegielek.simpleplanningpoker.domain.models.room.JoinRoomResponse
-import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 
 data class JoinRoomResponseDto(
     val message: String,

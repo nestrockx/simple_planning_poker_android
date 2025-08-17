@@ -1,6 +1,5 @@
 package com.wegielek.simpleplanningpoker.data.models.post
 
-import com.wegielek.simpleplanningpoker.domain.models.post.CreateVoteRequest
 import com.wegielek.simpleplanningpoker.domain.models.post.CreateVoteResponse
 
 data class CreateVoteResponseDto(

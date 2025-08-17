@@ -1,4 +1,4 @@
-package com.wegielek.simpleplanningpoker.domain.usecases
+package com.wegielek.simpleplanningpoker.domain.usecases.room
 
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 

@@ -5,7 +5,6 @@ import com.wegielek.simpleplanningpoker.data.remote.WebSocketService
 import com.wegielek.simpleplanningpoker.domain.models.websocket.WebSocketMessage
 import com.wegielek.simpleplanningpoker.domain.repository.WebSocketRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
