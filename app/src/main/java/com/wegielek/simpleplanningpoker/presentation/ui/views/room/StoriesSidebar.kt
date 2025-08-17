@@ -64,7 +64,7 @@ fun StoriesSidebar(
     val scope = rememberCoroutineScope()
     val room = viewModel.room.collectAsState()
     val stories = viewModel.stories.collectAsState()
-    val vote = viewModel.votes.collectAsState()
+    val votes = viewModel.votes.collectAsState()
     val currentStory = viewModel.currentStory
 
     val density = LocalDensity.current

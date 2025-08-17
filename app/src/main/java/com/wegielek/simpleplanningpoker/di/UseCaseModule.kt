@@ -29,6 +29,9 @@ import dagger.hilt.android.components.ViewModelComponent
 @InstallIn(ViewModelComponent::class)
 object UseCaseModule {
     @Provides
+    fun provideWebSocketUseCase(webSocketRepository: WebSocketRepository): WebSocketUseCase = WebSocketUseCase(webSocketRepository)
+
+    @Provides
     fun provideLoginUseCase(pokerRepository: PokerRepository): LoginUseCase = LoginUseCase(pokerRepository)
 
     @Provides
@@ -72,9 +75,6 @@ object UseCaseModule {
 
     @Provides
     fun provideGetVotesUseCase(pokerRepository: PokerRepository): GetVotesUseCase = GetVotesUseCase(pokerRepository)
-
-    @Provides
-    fun provideWebSocketUseCase(webSocketRepository: WebSocketRepository): WebSocketUseCase = WebSocketUseCase(webSocketRepository)
 
     @Provides
     fun provideUpdateNicknameUseCase(pokerRepository: PokerRepository): UpdateNicknameUseCase = UpdateNicknameUseCase(pokerRepository)

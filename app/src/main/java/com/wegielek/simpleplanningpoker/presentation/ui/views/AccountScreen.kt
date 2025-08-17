@@ -28,7 +28,7 @@ fun AccountScreen(
     LaunchedEffect(viewModel.isLoggedOut) {
         if (viewModel.isLoggedOut) {
             viewModel.clearLogout()
-            Preferences.clearTokenFromStorage(context)
+            Preferences.clearToken(context)
             onNavigate()
         }
     }

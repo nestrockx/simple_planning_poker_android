@@ -79,6 +79,7 @@ dependencies {
 
     // Data store
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.security.crypto.v110)
     implementation(libs.tink.android)
 
     // Viewmodel coroutines

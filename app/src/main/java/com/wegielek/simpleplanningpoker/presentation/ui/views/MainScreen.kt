@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -22,7 +23,9 @@ import com.wegielek.simpleplanningpoker.presentation.ui.views.room.ShareScreen
 @Composable
 fun MainScreen(navController: NavHostController = rememberNavController()) {
     val context: Context = LocalContext.current
-    val startDestination = if (Preferences.getTokenFromStorage(context) != null) "room" else "room"
+//    val startDestination = if (Preferences.getTokenFromStorage(context) != null) "room" else "auth"
+    val startDestination = "splash"
+
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) },
         modifier =
@@ -39,6 +42,14 @@ fun MainScreen(navController: NavHostController = rememberNavController()) {
                 composable("auth") {
                     AuthScreen {
                         navController.navigate("account")
+                    }
+                }
+                composable("splash") {
+                    LaunchedEffect(Unit) {
+                        val token = Preferences.getTokenOnce(context)
+                        navController.navigate(if (token != null) "room" else "room") {
+                            popUpTo("splash") { inclusive = true }
+                        }
                     }
                 }
 //                composable("create_join_room") {

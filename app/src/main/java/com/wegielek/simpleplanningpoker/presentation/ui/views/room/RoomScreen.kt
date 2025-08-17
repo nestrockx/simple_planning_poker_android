@@ -16,6 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HowToVote
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -158,6 +162,13 @@ fun RoomScreen(
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
+            if (viewModel.votingDialogVisible) {
+                VotingDialog(
+                    onDismiss = { viewModel.hideVotingDialog() },
+                    onValueSelected = { viewModel.setVoteValue(it) },
+                )
+            }
+
             StoriesSidebar {
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -241,6 +252,13 @@ fun RoomScreen(
                             Spacer(modifier = Modifier.padding(4.dp))
                         }
                     }
+                }
+                FloatingActionButton(
+                    onClick = { viewModel.showVotingDialog() },
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                ) {
+                    Icon(Icons.Default.HowToVote, contentDescription = "Vote")
                 }
             }
         }

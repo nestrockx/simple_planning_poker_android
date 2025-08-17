@@ -36,7 +36,7 @@ class PokerRepositoryImpl
                 .login(LoginRequestDto(username, password))
                 .toDomain()
                 .also {
-                    Preferences.saveTokenToStorage(context, it.accessToken)
+                    Preferences.saveToken(context, it.accessToken)
                 }.accessToken
                 .isNotEmpty()
 
@@ -49,7 +49,7 @@ class PokerRepositoryImpl
                 .register(RegisterRequestDto(username, nickname, password))
                 .toDomain()
                 .also {
-                    Preferences.saveTokenToStorage(context, it.accessToken)
+                    Preferences.saveToken(context, it.accessToken)
                 }.accessToken
                 .isNotEmpty()
 
@@ -58,7 +58,7 @@ class PokerRepositoryImpl
                 .guestLogin(GuestLoginRequestDto(nickname))
                 .toDomain()
                 .also {
-                    Preferences.saveTokenToStorage(context, it.accessToken)
+                    Preferences.saveToken(context, it.accessToken)
                 }.accessToken
                 .isNotEmpty()
 

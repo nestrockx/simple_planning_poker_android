@@ -57,6 +57,10 @@ class RoomViewModel
         private var repeat = 0
         private val repeatLimit = 10
 
+        var votingDialogVisible by mutableStateOf(false)
+
+        var selectedVoteValue by mutableStateOf("")
+
         var isConnected: Boolean by mutableStateOf(false)
             private set
 
@@ -374,5 +378,18 @@ class RoomViewModel
                         "",
                     )
             }
+        }
+
+        fun showVotingDialog() {
+            Log.d(LOG_TAG, "kurwa")
+            votingDialogVisible = true
+        }
+
+        fun hideVotingDialog() {
+            votingDialogVisible = false
+        }
+
+        fun setVoteValue(value: String) {
+            selectedVoteValue = value
         }
     }
