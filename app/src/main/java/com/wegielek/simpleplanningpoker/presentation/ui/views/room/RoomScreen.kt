@@ -96,6 +96,11 @@ fun RoomScreen(
         }
     }
 
+    LaunchedEffect(viewModel.selectedVoteValue) {
+        Log.d(logTag, "Selected vote value: ${viewModel.selectedVoteValue}")
+        viewModel.updateUserVote()
+    }
+
     if (viewModel.roomCode.isNotEmpty()) {
         val room = viewModel.room.collectAsState()
         val stories = viewModel.stories.collectAsState()

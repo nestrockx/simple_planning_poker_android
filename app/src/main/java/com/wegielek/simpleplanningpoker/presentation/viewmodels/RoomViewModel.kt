@@ -21,6 +21,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoriesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.vote.CreateVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.GetVotesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
@@ -49,6 +50,7 @@ class RoomViewModel
         private val getUserInfoUseCase: GetUserInfoUseCase,
         private val getUserUseCase: GetUserUseCase,
         private val joinRoomUseCase: JoinRoomUseCase,
+        private val createVoteUseCase: CreateVoteUseCase,
     ) : ViewModel() {
         companion object {
             private const val LOG_TAG = "RoomViewModel"
@@ -165,7 +167,7 @@ class RoomViewModel
             }
         }
 
-        fun send(text: String) {
+        fun sendToWebsocket(text: String) {
             webSocketUseCase.sendMessage(text)
         }
 
@@ -258,7 +260,7 @@ class RoomViewModel
                 try {
                     if (newStoryTitle.isNotEmpty()) {
                         val storyData: Story = createStoryUseCase(_room.value!!.id, newStoryTitle)
-                        send(
+                        sendToWebsocket(
                             JSONObject()
                                 .put("action", "add_story")
                                 .put("story_id", storyData.id)
@@ -393,5 +395,20 @@ class RoomViewModel
 
         fun setVoteValue(value: String) {
             selectedVoteValue = value
+        }
+
+        fun updateUserVote() {
+            viewModelScope.launch {
+                currentStory?.let { createVoteUseCase(it.id, selectedVoteValue) }
+            }
+            currentStory?.let {
+                sendToWebsocket(
+                    JSONObject()
+                        .put("action", "vote")
+                        .put("story_id", it.id)
+                        .put("value", selectedVoteValue)
+                        .toString(),
+                )
+            }
         }
     }
