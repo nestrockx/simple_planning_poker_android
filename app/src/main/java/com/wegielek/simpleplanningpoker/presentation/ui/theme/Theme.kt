@@ -17,6 +17,7 @@ private val DarkColorScheme =
         tertiary = LightGray,
         background = Black,
         onPrimary = White,
+        error = Red,
 //        onSecondary = White,
 //        onTertiary = White,
 //        onBackground = White,
@@ -30,6 +31,7 @@ private val LightColorScheme =
         tertiary = DarkGray,
         background = White,
         onPrimary = Black,
+        error = Red,
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),

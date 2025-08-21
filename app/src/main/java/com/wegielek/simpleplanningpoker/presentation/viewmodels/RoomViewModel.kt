@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import com.wegielek.simpleplanningpoker.domain.models.room.Room
 import com.wegielek.simpleplanningpoker.domain.models.room.Story
@@ -22,6 +23,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.story.GetStoryUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.CreateVoteUseCase
+import com.wegielek.simpleplanningpoker.domain.usecases.vote.DeleteVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.GetVotesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
@@ -51,6 +53,7 @@ class RoomViewModel
         private val getUserUseCase: GetUserUseCase,
         private val joinRoomUseCase: JoinRoomUseCase,
         private val createVoteUseCase: CreateVoteUseCase,
+        private val deleteVoteUseCase: DeleteVoteUseCase,
     ) : ViewModel() {
         companion object {
             private const val LOG_TAG = "RoomViewModel"
@@ -221,7 +224,11 @@ class RoomViewModel
         // Fetch votes for current story
         fun fetchVotes() {
             viewModelScope.launch {
-                _votes.value = currentStory?.let { getVotesUseCase(it.id) }
+                try {
+                    _votes.value = currentStory?.let { getVotesUseCase(it.id) }
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error fetching votes: ${e.message}")
+                }
             }
         }
 
@@ -338,7 +345,7 @@ class RoomViewModel
             _votes.value =
                 _votes.value?.map {
                     if (it.user.username == vote.username) {
-                        it.copy(value = vote.value.toString())
+                        it.copy(value = vote.value.toString().replace("\"", ""))
                     } else {
                         it
                     }
@@ -399,7 +406,11 @@ class RoomViewModel
 
         fun updateUserVote() {
             viewModelScope.launch {
-                currentStory?.let { createVoteUseCase(it.id, selectedVoteValue) }
+                try {
+                    currentStory?.let { createVoteUseCase(it.id, selectedVoteValue) }
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error creating vote: ${e.message}")
+                }
             }
             currentStory?.let {
                 sendToWebsocket(
@@ -410,5 +421,36 @@ class RoomViewModel
                         .toString(),
                 )
             }
+        }
+
+        fun revealVotesSend(value: Boolean) {
+            if (value) {
+                sendToWebsocket(
+                    JSONObject()
+                        .put("action", "reveal")
+                        .put("story_id", currentStory?.id)
+                        .toString(),
+                )
+            } else {
+                sendToWebsocket(
+                    JSONObject()
+                        .put("action", "unreveal")
+                        .put("story_id", currentStory?.id)
+                        .toString(),
+                )
+            }
+        }
+
+        fun resetVotes() {
+            viewModelScope.launch {
+                currentStory?.id?.let { deleteVoteUseCase(it) }
+            }
+            _votes.value = _votes.value?.filter { false }
+            sendToWebsocket(
+                JSONObject()
+                    .put("action", "reset")
+                    .put("story_id", currentStory?.id)
+                    .toString(),
+            )
         }
     }

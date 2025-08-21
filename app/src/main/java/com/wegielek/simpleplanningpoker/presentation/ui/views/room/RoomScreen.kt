@@ -17,7 +17,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.HowToVote
+import androidx.compose.material.icons.filled.PanoramaFishEye
+import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,10 +37,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -264,6 +271,53 @@ fun RoomScreen(
                     modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 ) {
                     Icon(Icons.Default.HowToVote, contentDescription = "Vote")
+                }
+
+                val base = MaterialTheme.colorScheme.primary.toArgb()
+                val background = MaterialTheme.colorScheme.background.toArgb()
+                val blended = ColorUtils.blendARGB(base, background, 0.3f) // 30% towards background
+                val adjustedColor = Color(blended)
+                viewModel.currentStory?.let {
+                    if (!it.is_revealed) {
+                        ExtendedFloatingActionButton(
+                            onClick = { viewModel.revealVotesSend(true) },
+                            containerColor = adjustedColor,
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(16.dp),
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Default.RemoveRedEye,
+                                    contentDescription = "Reveal votes",
+                                )
+                            },
+                            text = { Text("Reveal") },
+                        )
+                    } else {
+                        ExtendedFloatingActionButton(
+                            onClick = { viewModel.revealVotesSend(false) },
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .padding(16.dp),
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Default.PanoramaFishEye,
+                                    contentDescription = "Hide votes",
+                                )
+                            },
+                            text = { Text("Hide") },
+                        )
+                        FloatingActionButton(
+                            onClick = { viewModel.resetVotes() },
+                            containerColor = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+                        ) {
+                            Icon(Icons.Default.Cancel, contentDescription = "Reset Votes")
+                        }
+                    }
                 }
             }
         }
