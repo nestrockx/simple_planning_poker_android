@@ -91,11 +91,6 @@ class RoomViewModel
         private val _messages = MutableStateFlow<List<WebSocketMessage>>(emptyList())
         val messages: StateFlow<List<WebSocketMessage>> = _messages.asStateFlow()
 
-        init {
-//            fetchRoom()
-//            connectWebSocket()
-        }
-
         // room code
         fun getRoomCode(context: Context): String {
             if (roomCode.isNotEmpty() && Preferences.getRoomCodeFromStorage(context) != null) return roomCode
@@ -341,6 +336,10 @@ class RoomViewModel
         }
 
         fun updateVote(vote: com.wegielek.simpleplanningpoker.domain.models.websocket.Vote) {
+            if (_votes.value.isNullOrEmpty()) {
+                fetchVotes()
+            }
+
             _votes.value =
                 _votes.value?.map {
                     if (it.user.username == vote.username) {

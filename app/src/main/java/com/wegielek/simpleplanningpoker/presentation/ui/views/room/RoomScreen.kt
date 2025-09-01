@@ -116,12 +116,12 @@ fun RoomScreen(
         val messages = viewModel.messages.collectAsState()
         val currentStory = viewModel.currentStory
 
-        var voted by remember { mutableStateOf(false) }
+//        var voted by remember { mutableStateOf(false) }
 
         LaunchedEffect(viewModel.currentStory) {
             viewModel.currentStory?.let { Log.d(logTag, it.title) }
             viewModel.fetchVotes()
-            voted = false
+//            voted = false
         }
 
         // Handle message
@@ -233,6 +233,7 @@ fun RoomScreen(
                                             }
                                         }
                                     } else {
+                                        var voted = false
                                         votes.value?.let {
                                             for (vote in it) {
                                                 if (vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id) {
@@ -248,7 +249,6 @@ fun RoomScreen(
                                                         .clip(shape = CircleShape)
                                                         .background(color = MaterialTheme.colorScheme.primary),
                                             )
-                                            voted = false
                                         } else {
                                             Box(
                                                 modifier =

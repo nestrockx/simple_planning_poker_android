@@ -223,7 +223,7 @@ fun StoriesSidebar(
                                 containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
                             ),
                     ) {
-                        Text("Leave", fontWeight = FontWeight.Bold)
+                        Text("Exit", fontWeight = FontWeight.Bold)
                     }
                 }
             }
