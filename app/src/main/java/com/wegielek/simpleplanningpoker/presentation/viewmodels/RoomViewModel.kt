@@ -74,6 +74,9 @@ class RoomViewModel
         var roomNameField by mutableStateOf("")
             private set
 
+        var roomCodeField by mutableStateOf("")
+            private set
+
         var newStoryTitle: String by mutableStateOf("")
             private set
         var currentStory: Story? by mutableStateOf(null)
@@ -239,6 +242,10 @@ class RoomViewModel
             roomNameField = newRoomName
         }
 
+        fun onRoomCodeChanged(newRoomCode: String) {
+            roomCodeField = newRoomCode
+        }
+
         fun createRoom(
             name: String,
             type: String,
@@ -293,6 +300,10 @@ class RoomViewModel
                     Log.e(LOG_TAG, "Error joining room: ${e.message}")
                 }
             }
+        }
+
+        fun joinRoom(code: String) {
+            roomCode = code
         }
 
         // Handle participants

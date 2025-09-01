@@ -36,11 +36,14 @@ import kotlin.math.min
 fun RoomJoinCreateScreen(
     viewModel: RoomViewModel = hiltViewModel(),
     onCreateRoomClick: (String, String) -> Unit,
+    onJoinRoomClick: (String) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    var loading by remember { mutableStateOf(false) }
+    var createRoomLoading by remember { mutableStateOf(false) }
+    var joinRoomLoading by remember { mutableStateOf(false) }
 
     val roomName = viewModel.roomNameField
+    val roomCode = viewModel.roomCodeField
 
     val verticalScreenWidth =
         min(
@@ -51,11 +54,21 @@ fun RoomJoinCreateScreen(
 
     fun onCreateRoom(name: String) {
         if (name.isBlank()) return
-        loading = true
-        onCreateRoomClick(name, "default") // TODO
+        createRoomLoading = true
+        onCreateRoomClick(name, "default") // TODO add room options
         scope.launch {
             delay(2000)
-            loading = false
+            createRoomLoading = false
+        }
+    }
+
+    fun onJoinRoom(code: String) {
+        if (code.isBlank()) return
+        joinRoomLoading = true
+        onJoinRoomClick(code)
+        scope.launch {
+            delay(2000)
+            joinRoomLoading = false
         }
     }
 
@@ -68,6 +81,7 @@ fun RoomJoinCreateScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            // Create form
             Text("Create Room", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -82,11 +96,37 @@ fun RoomJoinCreateScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (!loading) {
+            if (!createRoomLoading) {
                 Button(
                     onClick = { onCreateRoom(roomName) },
                 ) {
                     Text("Create", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
+                }
+            } else {
+                CircularProgressIndicator(modifier = Modifier.padding(vertical = 8.dp))
+            }
+            Spacer(Modifier.padding(20.dp))
+
+            // Join form
+            Text("Join Room", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = roomCode,
+                onValueChange = { viewModel.onRoomCodeChanged(it) },
+                label = { Text("Room Code") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (!joinRoomLoading) {
+                Button(
+                    onClick = { onJoinRoom(roomCode) },
+                ) {
+                    Text("Join", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
                 }
             } else {
                 CircularProgressIndicator(modifier = Modifier.padding(vertical = 8.dp))

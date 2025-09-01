@@ -322,8 +322,17 @@ fun RoomScreen(
             }
         }
     } else {
-        RoomJoinCreateScreen { name, type ->
-            viewModel.createRoom(name, type)
-        }
+        RoomJoinCreateScreen(
+            onCreateRoomClick = { name, type ->
+                viewModel.createRoom(name, type)
+            },
+            onJoinRoomClick = { code ->
+                if (code.length == 6) {
+                    viewModel.joinRoom(code)
+                } else {
+                    Log.e(logTag, "Invalid room code: $code")
+                }
+            },
+        )
     }
 }
