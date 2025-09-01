@@ -72,7 +72,11 @@ fun MainScreen(
                 }
                 composable("share") {
                     ShareScreen {
-                        navController.navigate("")
+                        navController.navigate("room") {
+//                            popUpTo("share") { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                 }
             }

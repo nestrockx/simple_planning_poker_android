@@ -1,6 +1,6 @@
 package com.wegielek.simpleplanningpoker.presentation.ui.views
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,21 +9,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ModeEdit
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.ModeEdit
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wegielek.simpleplanningpoker.prefs.Preferences
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AccountViewModel
 
 @Composable
@@ -35,43 +42,89 @@ fun AccountScreen(
     val user = viewModel.user.collectAsState()
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(viewModel.isLoggedOut) {
-        if (viewModel.isLoggedOut) {
+    val nickname = viewModel.nicknameField
+    val isLoggedOut = viewModel.isLoggedOut
+
+    val base = MaterialTheme.colorScheme.primary.toArgb()
+    val background = MaterialTheme.colorScheme.background.toArgb()
+    val blended = ColorUtils.blendARGB(base, background, 0.3f)
+    val adjustedColor = Color(blended)
+
+    LaunchedEffect(isLoggedOut) {
+        if (isLoggedOut) {
             viewModel.clearLogout()
-            Preferences.clearToken(context)
             onNavigate()
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Row {
+    Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState), contentAlignment = Alignment.Center) {
+        Row(Modifier.padding(20.dp)) {
             Column {
                 Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.padding(6.dp))
+                Spacer(modifier = Modifier.padding(18.dp))
                 Text("Nickname: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
 
             Column {
                 user.value?.username?.let { Text(it, fontSize = 20.sp) }
                 Spacer(modifier = Modifier.padding(6.dp))
-                Row {
-                    user.value
-                        ?.profile
-                        ?.nickname
-                        ?.let { Text(it, fontSize = 20.sp) }
+                if (!viewModel.isNicknameInEdit) {
                     Spacer(modifier = Modifier.padding(6.dp))
-                    Icon(imageVector = Icons.Default.ModeEdit, contentDescription = "Edit nickname")
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (!viewModel.isNicknameInEdit) {
+                        user.value
+                            ?.profile
+                            ?.nickname
+                            ?.let { Text(it, fontSize = 20.sp) }
+                    } else {
+                        OutlinedTextField(
+                            value = nickname,
+                            onValueChange = { viewModel.onNicknameChanged(it) },
+                            label = { Text("New nickname") },
+                            singleLine = true,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    if (!viewModel.isNicknameInEdit) {
+                        IconButton(onClick = { viewModel.editNickname(true) }) {
+                            Icon(
+                                imageVector = Icons.Outlined.ModeEdit,
+                                contentDescription = "Edit nickname",
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            viewModel.editNickname(false)
+                            viewModel.updateNickname()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Check,
+                                contentDescription = "Confirm nickname edit",
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
                 }
             }
         }
-        Button(
-//            colors = ButtonDefaults.buttonColors(contentColor = MaterialTheme.colorScheme.secondary),
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = { viewModel.logout() },
-        ) { Text("Logout") }
+        ExtendedFloatingActionButton(
+            onClick = {
+                viewModel.logout(context)
+            },
+            containerColor = adjustedColor,
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = "Reveal votes",
+                )
+            },
+            text = { Text("Logout") },
+        )
     }
 }

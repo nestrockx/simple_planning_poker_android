@@ -275,7 +275,7 @@ fun RoomScreen(
 
                 val base = MaterialTheme.colorScheme.primary.toArgb()
                 val background = MaterialTheme.colorScheme.background.toArgb()
-                val blended = ColorUtils.blendARGB(base, background, 0.3f) // 30% towards background
+                val blended = ColorUtils.blendARGB(base, background, 0.3f)
                 val adjustedColor = Color(blended)
                 viewModel.currentStory?.let {
                     if (!it.is_revealed) {
