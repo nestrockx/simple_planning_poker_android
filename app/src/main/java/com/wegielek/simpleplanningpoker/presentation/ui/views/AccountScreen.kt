@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.Button
@@ -31,6 +33,7 @@ fun AccountScreen(
 ) {
     val context = LocalContext.current
     val user = viewModel.user.collectAsState()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(viewModel.isLoggedOut) {
         if (viewModel.isLoggedOut) {
@@ -41,7 +44,7 @@ fun AccountScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

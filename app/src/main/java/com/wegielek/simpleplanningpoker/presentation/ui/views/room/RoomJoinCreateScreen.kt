@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -38,6 +40,7 @@ fun RoomJoinCreateScreen(
     onCreateRoomClick: (String, String) -> Unit,
     onJoinRoomClick: (String) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     var createRoomLoading by remember { mutableStateOf(false) }
     var joinRoomLoading by remember { mutableStateOf(false) }
@@ -72,7 +75,7 @@ fun RoomJoinCreateScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState), contentAlignment = Alignment.Center) {
         Column(
             modifier =
                 Modifier

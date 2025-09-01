@@ -328,7 +328,7 @@ fun RoomScreen(
             },
             onJoinRoomClick = { code ->
                 if (code.length == 6) {
-                    viewModel.joinRoom(code)
+                    viewModel.joinRoom(code) { Log.e(logTag, "Invalid room code: $code") }
                 } else {
                     Log.e(logTag, "Invalid room code: $code")
                 }

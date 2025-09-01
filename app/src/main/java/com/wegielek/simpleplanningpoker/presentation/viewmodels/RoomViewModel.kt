@@ -302,8 +302,18 @@ class RoomViewModel
             }
         }
 
-        fun joinRoom(code: String) {
-            roomCode = code
+        fun joinRoom(
+            code: String,
+            onError: (String) -> Unit,
+        ) {
+            viewModelScope.launch {
+                try {
+                    joinRoomUseCase(code)
+                    roomCode = code
+                } catch (e: Exception) {
+                    onError(e.message ?: "Unknown error")
+                }
+            }
         }
 
         // Handle participants
