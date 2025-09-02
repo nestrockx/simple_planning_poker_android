@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.ModeEdit
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,7 +62,7 @@ fun AccountScreen(
             Column {
                 Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.padding(18.dp))
-                Text("Nickname: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Display name: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
 
             Column {

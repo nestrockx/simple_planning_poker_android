@@ -19,8 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.HowToVote
-import androidx.compose.material.icons.filled.PanoramaFishEye
 import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,10 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -304,7 +300,7 @@ fun RoomScreen(
                                     .padding(16.dp),
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Default.PanoramaFishEye,
+                                    imageVector = Icons.Outlined.RemoveRedEye,
                                     contentDescription = "Hide votes",
                                 )
                             },

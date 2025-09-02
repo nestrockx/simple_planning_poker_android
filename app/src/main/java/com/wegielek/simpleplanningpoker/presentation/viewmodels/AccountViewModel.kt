@@ -48,9 +48,10 @@ class AccountViewModel
 
         private fun fetchUserInfo() {
             viewModelScope.launch {
-                Log.d(LOG_TAG, "Fetching user data")
                 try {
+                    Log.d(LOG_TAG, "Fetching user data")
                     _user.value = getUserInfoUseCase()
+                    nicknameField = _user.value?.profile?.nickname ?: ""
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error fetching user data", e)
                 }
@@ -80,7 +81,7 @@ class AccountViewModel
         fun updateNickname() {
             viewModelScope.launch {
                 try {
-                    updateNicknameUseCase(nicknameField)
+                    updateNicknameUseCase(nicknameField.trim())
                     fetchUserInfo()
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error updating nickname", e)

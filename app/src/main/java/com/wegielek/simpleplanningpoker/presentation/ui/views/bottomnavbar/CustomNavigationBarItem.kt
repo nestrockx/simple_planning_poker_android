@@ -32,7 +32,7 @@ fun CustomNavigationBarItem(
     modifier: Modifier = Modifier,
     selectedColor: Color = MaterialTheme.colorScheme.primary,
     unselectedColor: Color = Color.Gray,
-    backgroundColor: Color = Color(0xFF000000),
+//    backgroundColor: Color = Color(0xFF000000),
 ) {
     val iconColor by animateColorAsState(if (selected) selectedColor else unselectedColor)
     val labelColor by animateColorAsState(if (selected) selectedColor else unselectedColor)

@@ -17,10 +17,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -208,21 +208,23 @@ fun StoriesSidebar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End,
                 ) {
-//                    IconButton(onClick = { viewModel.clearRoomCode(context) }) {
-//                        Icon(
-//                            Icons.Default.Cancel,
-//                            contentDescription = "Close",
-//                            modifier = Modifier.size(28.dp),
-//                        )
+//                    Button(
+//                        onClick = { viewModel.clearRoomCode(context) },
+//                        colors =
+//                            ButtonDefaults.buttonColors(
+//                                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+//                            ),
+//                    ) {
+//                        Text("Exit", fontWeight = FontWeight.Bold)
 //                    }
-                    Button(
+                    IconButton(
                         onClick = { viewModel.clearRoomCode(context) },
-                        colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-                            ),
                     ) {
-                        Text("Exit", fontWeight = FontWeight.Bold)
+                        Icon(
+                            Icons.Default.Cancel,
+                            contentDescription = "Exit room",
+                            modifier = Modifier.size(28.dp),
+                        )
                     }
                 }
             }
