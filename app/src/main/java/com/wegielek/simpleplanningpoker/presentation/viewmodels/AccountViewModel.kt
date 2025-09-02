@@ -49,7 +49,11 @@ class AccountViewModel
         private fun fetchUserInfo() {
             viewModelScope.launch {
                 Log.d(LOG_TAG, "Fetching user data")
-                _user.value = getUserInfoUseCase()
+                try {
+                    _user.value = getUserInfoUseCase()
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error fetching user data", e)
+                }
             }
         }
 

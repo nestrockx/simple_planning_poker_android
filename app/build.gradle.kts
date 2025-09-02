@@ -74,9 +74,6 @@ dependencies {
     // Hilt navigation for Compose
     implementation(libs.androidx.hilt.navigation.compose)
 
-    // Encrypted Shared Preferences
-    implementation(libs.androidx.security.crypto)
-
     // Data store
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.security.crypto.v110)

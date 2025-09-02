@@ -3,26 +3,25 @@ agp = "8.12.2"
 converterGson = "3.0.0"
 datastorePreferences = "1.1.7"
 desugar_jdk_libs = "2.1.5"
-hiltAndroid = "2.57"
+hiltAndroid = "2.57.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.2.10"
 kotlinSerialization = "2.2.10"
 kotlinSerializationJson = "1.9.0"
-ktlint = "13.0.0"
+ktlint = "13.1.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.2"
+lifecycleRuntimeKtx = "2.9.3"
 activityCompose = "1.10.1"
-composeBom = "2025.08.00"
+composeBom = "2025.08.01"
 lifecycleViewmodelKtx = "2.9.3"
 loggingInterceptor = "5.1.0"
 materialIconsExtended = "1.7.8"
 navigationCompose = "2.9.3"
 okhttp = "5.1.0"
 retrofit = "3.0.0"
-securityCrypto = "1.1.0"
 securityCryptoVersion = "1.1.0"
 tinkAndroid = "1.18.0"
 
@@ -33,7 +32,6 @@ androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-com
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 androidx-security-crypto-v110 = { module = "androidx.security:security-crypto", version.ref = "securityCryptoVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }

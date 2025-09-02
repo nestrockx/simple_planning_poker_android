@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ModeEdit
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -89,7 +90,7 @@ fun AccountScreen(
                     if (!viewModel.isNicknameInEdit) {
                         IconButton(onClick = { viewModel.editNickname(true) }) {
                             Icon(
-                                imageVector = Icons.Outlined.ModeEdit,
+                                imageVector = Icons.Filled.ModeEdit,
                                 contentDescription = "Edit nickname",
                                 tint = MaterialTheme.colorScheme.primary,
                             )
