@@ -27,6 +27,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.vote.GetVotesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -120,7 +121,7 @@ class RoomViewModel
         }
 
         fun getStory(pk: Int) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val story = getStoryUseCase(pk)
                     Log.d(LOG_TAG, "Story: $story")
@@ -132,13 +133,13 @@ class RoomViewModel
 
         // Websocket init
         fun connectWebSocket(context: Context) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 webSocketUseCase.isConnected.collect {
                     Log.d("WebSocket", "Connected: $it")
                     isConnected = it
                 }
             }
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 webSocketUseCase.incomingMessages.collect {
                     Log.d("WebSocket", "Received message: $it")
                     _messages.value = _messages.value + it
@@ -150,7 +151,7 @@ class RoomViewModel
         }
 
         private fun connect(context: Context) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 if (!roomCode.isNotEmpty()) {
                     repeat += 1
                     if (repeat <= repeatLimit) {
@@ -188,7 +189,7 @@ class RoomViewModel
 
         // Fetch room data and stories with room code
         fun fetchRoom() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (roomCode.isNotEmpty()) {
                         Log.d(LOG_TAG, "Fetching room with code: $roomCode")
@@ -220,7 +221,7 @@ class RoomViewModel
 
         // Fetch votes for current story
         fun fetchVotes() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     _votes.value = currentStory?.let { getVotesUseCase(it.id) }
                 } catch (e: Exception) {
@@ -250,7 +251,7 @@ class RoomViewModel
             name: String,
             type: String,
         ) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     Log.d(LOG_TAG, "Creating room with name: $name and type: $type")
                     val roomData: Room = createRoomUseCase(name, type)
@@ -264,7 +265,7 @@ class RoomViewModel
 
         // Handle stories
         fun createStory() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (newStoryTitle.isNotEmpty()) {
                         val storyData: Story = createStoryUseCase(_room.value!!.id, newStoryTitle)
@@ -283,7 +284,7 @@ class RoomViewModel
         }
 
         fun deleteStory(pk: Int) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     deleteStoryUseCase(pk)
                 } catch (e: Exception) {
@@ -293,7 +294,7 @@ class RoomViewModel
         }
 
         fun joinRoom() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     joinRoomUseCase(roomCode)
                 } catch (e: Exception) {
@@ -306,7 +307,7 @@ class RoomViewModel
             code: String,
             onError: (String) -> Unit,
         ) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     joinRoomUseCase(code)
                     roomCode = code
@@ -424,7 +425,7 @@ class RoomViewModel
         }
 
         fun updateUserVote() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     currentStory?.let { createVoteUseCase(it.id, selectedVoteValue) }
                 } catch (e: Exception) {
@@ -461,7 +462,7 @@ class RoomViewModel
         }
 
         fun resetVotes() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 currentStory?.id?.let { deleteVoteUseCase(it) }
             }
             _votes.value = _votes.value?.filter { false }

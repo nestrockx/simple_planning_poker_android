@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AuthViewModel
-import com.wegielek.simpleplanningpoker.utils.ScreenUtils.Companion.pxToDp
+import com.wegielek.simpleplanningpoker.utils.ScreenUtils.pxToDp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.min

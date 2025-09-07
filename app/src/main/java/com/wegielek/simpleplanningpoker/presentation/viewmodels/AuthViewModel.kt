@@ -10,6 +10,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.auth.GuestLoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
@@ -84,7 +85,7 @@ class AuthViewModel
         }
 
         fun login() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (username.isNotEmpty() && password.isNotEmpty()) {
                         Log.d(LOG_TAG, "Logging in with username: $username")
@@ -97,7 +98,7 @@ class AuthViewModel
         }
 
         fun register() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (username.isNotEmpty() && nickname.isNotEmpty() && password.isNotEmpty()) {
                         Log.d(
@@ -113,7 +114,7 @@ class AuthViewModel
         }
 
         fun guestLogin() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     Log.d(LOG_TAG, "Logging : $nickname")
                     guestLoginResult = guestLoginUseCase(nickname)

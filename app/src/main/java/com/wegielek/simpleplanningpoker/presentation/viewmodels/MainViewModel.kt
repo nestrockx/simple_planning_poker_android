@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class MainViewModel
         private val getUserInfoUseCase: GetUserInfoUseCase,
     ) : ViewModel() {
         fun getUserInfo() =
-            viewModelScope.async {
+            viewModelScope.async(Dispatchers.IO) {
                 getUserInfoUseCase()
             }
     }

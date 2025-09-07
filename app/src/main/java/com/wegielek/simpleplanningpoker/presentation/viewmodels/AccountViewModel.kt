@@ -13,6 +13,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.UpdateNicknameUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -47,7 +48,7 @@ class AccountViewModel
         }
 
         private fun fetchUserInfo() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     Log.d(LOG_TAG, "Fetching user data")
                     _user.value = getUserInfoUseCase()
@@ -59,7 +60,7 @@ class AccountViewModel
         }
 
         fun logout(context: Context) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 Preferences.clearToken(context)
                 logoutUseCase()
                 isLoggedOut = true
@@ -79,7 +80,7 @@ class AccountViewModel
         }
 
         fun updateNickname() {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 try {
                     updateNicknameUseCase(nicknameField.trim())
                     fetchUserInfo()
