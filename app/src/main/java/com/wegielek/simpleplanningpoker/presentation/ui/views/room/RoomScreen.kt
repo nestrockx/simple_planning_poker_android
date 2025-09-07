@@ -55,10 +55,7 @@ import com.wegielek.simpleplanningpoker.domain.models.websocket.VoteUpdate
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
 
 @Composable
-fun RoomScreen(
-    viewModel: RoomViewModel = hiltViewModel(),
-    onNavigate: () -> Unit,
-) {
+fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     val logTag = "RoomScreen"
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -112,15 +109,11 @@ fun RoomScreen(
         val messages = viewModel.messages.collectAsState()
         val currentStory = viewModel.currentStory
 
-//        var voted by remember { mutableStateOf(false) }
-
         LaunchedEffect(viewModel.currentStory) {
             viewModel.currentStory?.let { Log.d(logTag, it.title) }
             viewModel.fetchVotes()
-//            voted = false
         }
 
-        // Handle message
         LaunchedEffect(messages.value.lastOrNull()) {
             val message = messages.value.lastOrNull() ?: return@LaunchedEffect
             Log.d(logTag, "Message: $message")
@@ -229,14 +222,10 @@ fun RoomScreen(
                                             }
                                         }
                                     } else {
-                                        var voted = false
-                                        votes.value?.let {
-                                            for (vote in it) {
-                                                if (vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id) {
-                                                    voted = true
-                                                }
-                                            }
-                                        }
+                                        val voted =
+                                            votes.value?.any { vote ->
+                                                vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id
+                                            } == true
                                         if (voted) {
                                             Box(
                                                 modifier =

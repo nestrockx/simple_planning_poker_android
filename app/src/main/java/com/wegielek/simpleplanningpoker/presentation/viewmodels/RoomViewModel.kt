@@ -358,18 +358,26 @@ class RoomViewModel
         }
 
         fun updateVote(vote: com.wegielek.simpleplanningpoker.domain.models.websocket.Vote) {
-            if (_votes.value.isNullOrEmpty()) {
-                fetchVotes()
-            }
+            fetchVotes()
+//            if (_votes.value.isNullOrEmpty()) {
+//            fetchVotes()
+//                return
+//            }
 
-            _votes.value =
-                _votes.value?.map {
-                    if (it.user.username == vote.username) {
-                        it.copy(value = vote.value.toString().replace("\"", ""))
-                    } else {
-                        it
-                    }
-                }
+//            val participantUsernames = _participants.value?.map { it.username } ?: emptyList()
+//
+//            if (vote.username in participantUsernames) {
+//                _votes.value =
+//                    _votes.value?.map {
+//                        if (it.user.username == vote.username) {
+//                            it.copy(value = vote.value.toString().replace("\"", ""))
+//                        } else {
+//                            it
+//                        }
+//                    }
+//            } else {
+//                _votes.value = _votes.value?.plus(Vote(vote.value))
+//            }
         }
 
         // Stories

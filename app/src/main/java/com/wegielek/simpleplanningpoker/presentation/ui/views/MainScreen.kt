@@ -61,9 +61,7 @@ fun MainScreen(
                     }
                 }
                 composable("room") {
-                    RoomScreen {
-                        navController.navigate("")
-                    }
+                    RoomScreen()
                 }
                 composable("account") {
                     AccountScreen {
