@@ -1,10 +1,12 @@
 package com.wegielek.simpleplanningpoker.domain.models.room
 
+import com.google.gson.annotations.SerializedName
+
 data class Story(
     val id: Int,
-    val room_id: Int,
+    @SerializedName("room_id") val roomId: Int,
     val title: String,
-    val is_active: Boolean,
-    val is_revealed: Boolean,
-    val created_at: String,
+    @SerializedName("is_active") val isActive: Boolean,
+    @SerializedName("is_revealed") val isRevealed: Boolean,
+    @SerializedName("created_at") val createdAt: String,
 )

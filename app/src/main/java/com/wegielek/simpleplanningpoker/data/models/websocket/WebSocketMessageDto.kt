@@ -38,7 +38,7 @@ data class RevealVotesDto(
 
 @Serializable
 data class RevealDto(
-    val story_id: Int,
+    @SerialName("story_id") val storyId: Int,
     val username: String,
     val value: Boolean,
 )
@@ -52,7 +52,7 @@ data class ResetVotesDto(
 
 @Serializable
 data class ResetDto(
-    val story_id: Int,
+    @SerialName("story_id") val storyId: Int,
     val username: String,
 )
 
@@ -65,7 +65,7 @@ data class VoteUpdateDto(
 
 @Serializable
 data class VoteDto(
-    val story_id: Int,
+    @SerialName("story_id") val storyId: Int,
     val username: String,
     val value: JsonElement,
 )
@@ -95,5 +95,5 @@ data class SummonDto(
 data class StoryDto(
     val id: Int,
     val title: String,
-    val is_revealed: Boolean,
+    @SerialName("is_revealed") val isRevealed: Boolean,
 )

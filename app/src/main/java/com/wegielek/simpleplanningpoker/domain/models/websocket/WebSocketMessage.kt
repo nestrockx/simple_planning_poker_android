@@ -38,7 +38,7 @@ data class RevealVotes(
 
 @Serializable
 data class Reveal(
-    val story_id: Int,
+    @SerialName("story_id") val storyId: Int,
     val username: String,
     val value: Boolean,
 )
@@ -52,7 +52,7 @@ data class ResetVotes(
 
 @Serializable
 data class Reset(
-    val story_id: Int,
+    @SerialName("story_id") val storyId: Int,
     val username: String,
 )
 
@@ -65,7 +65,7 @@ data class VoteUpdate(
 
 @Serializable
 data class Vote(
-    val story_id: Int,
+    @SerialName("story_id") val storyId: Int,
     val username: String,
     val value: JsonElement,
 )
@@ -95,5 +95,5 @@ data class Summon(
 data class Story(
     val id: Int,
     val title: String,
-    val is_revealed: Boolean,
+    @SerialName("is_revealed") val isRevealed: Boolean,
 )

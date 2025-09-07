@@ -1,11 +1,13 @@
 package com.wegielek.simpleplanningpoker.domain.models.room
 
+import com.google.gson.annotations.SerializedName
+
 data class Room(
     val id: Int,
     val name: String,
     val type: String,
     val code: String,
     val participants: List<ParticipantUser>,
-    val created_by: ParticipantUser,
-    val created_at: String,
+    @SerializedName("created_by") val createdBy: ParticipantUser,
+    @SerializedName("created_at") val createdAt: String,
 )

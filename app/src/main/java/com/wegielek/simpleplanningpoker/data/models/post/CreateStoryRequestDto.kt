@@ -1,10 +1,11 @@
 package com.wegielek.simpleplanningpoker.data.models.post
 
+import com.google.gson.annotations.SerializedName
 import com.wegielek.simpleplanningpoker.domain.models.post.CreateStoryRequest
 
 data class CreateStoryRequestDto(
-    val room_id: Int,
+    @SerializedName("room_id") val roomId: Int,
     val title: String,
 ) {
-    fun toDomain() = CreateStoryRequest(room_id, title)
+    fun toDomain() = CreateStoryRequest(roomId, title)
 }

@@ -26,7 +26,7 @@ interface PokerRepository {
 
     suspend fun getUserInfo(): ParticipantUser
 
-    suspend fun getUser(user_id: Int): ParticipantUser
+    suspend fun getUser(userId: Int): ParticipantUser
 
     suspend fun getRoom(code: String): Room
 
@@ -38,7 +38,7 @@ interface PokerRepository {
     ): Room
 
     suspend fun createStory(
-        room_id: Int,
+        roomId: Int,
         title: String,
     ): Story
 
@@ -46,16 +46,16 @@ interface PokerRepository {
 
     suspend fun deleteStory(pk: Int)
 
-    suspend fun getStories(room_id: Int): List<Story>
+    suspend fun getStories(roomId: Int): List<Story>
 
     suspend fun createVote(
-        story_id: Int,
+        storyId: Int,
         value: String,
     ): CreateVoteResponse
 
-    suspend fun getVotes(story_id: Int): List<Vote>
+    suspend fun getVotes(storyId: Int): List<Vote>
 
-    suspend fun deleteVote(story_id: Int)
+    suspend fun deleteVote(storyId: Int)
 
     suspend fun updateNickname(nickname: String): Profile
 }

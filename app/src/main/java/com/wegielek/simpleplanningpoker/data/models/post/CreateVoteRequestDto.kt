@@ -1,10 +1,11 @@
 package com.wegielek.simpleplanningpoker.data.models.post
 
+import com.google.gson.annotations.SerializedName
 import com.wegielek.simpleplanningpoker.domain.models.post.CreateVoteRequest
 
 data class CreateVoteRequestDto(
-    val story_id: Int,
+    @SerializedName("story_id") val storyId: Int,
     val value: String,
 ) {
-    fun toDomain() = CreateVoteRequest(story_id, value)
+    fun toDomain() = CreateVoteRequest(storyId, value)
 }

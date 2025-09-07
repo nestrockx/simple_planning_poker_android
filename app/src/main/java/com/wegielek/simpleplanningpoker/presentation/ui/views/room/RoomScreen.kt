@@ -54,9 +54,10 @@ import com.wegielek.simpleplanningpoker.domain.models.websocket.Summon
 import com.wegielek.simpleplanningpoker.domain.models.websocket.VoteUpdate
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
 
+private const val LOG_TAG = "RoomScreen"
+
 @Composable
 fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
-    val logTag = "RoomScreen"
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -77,7 +78,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     }
 
     LaunchedEffect(viewModel.roomCode) {
-        Log.d(logTag, "Room code: ${viewModel.roomCode}")
+        Log.d(LOG_TAG, "Room code: ${viewModel.roomCode}")
         viewModel.getRoomCode(context)
         if (viewModel.roomCode.isNotEmpty()) {
             viewModel.fetchRoom()
@@ -91,72 +92,72 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
         if (viewModel.isConnected) {
             viewModel.joinRoom()
             val participant = viewModel.getUserInfo().await()
-            Log.d(logTag, "New participant: $participant")
+            Log.d(LOG_TAG, "New participant: $participant")
             viewModel.addParticipant(participant)
         }
     }
 
     LaunchedEffect(viewModel.selectedVoteValue) {
-        Log.d(logTag, "Selected vote value: ${viewModel.selectedVoteValue}")
+        Log.d(LOG_TAG, "Selected vote value: ${viewModel.selectedVoteValue}")
         viewModel.updateUserVote()
     }
 
     if (viewModel.roomCode.isNotEmpty()) {
-        val room = viewModel.room.collectAsState()
-        val stories = viewModel.stories.collectAsState()
+//        val room = viewModel.room.collectAsState()
+//        val stories = viewModel.stories.collectAsState()
         val votes = viewModel.votes.collectAsState()
         val participants = viewModel.participants.collectAsState()
         val messages = viewModel.messages.collectAsState()
         val currentStory = viewModel.currentStory
 
         LaunchedEffect(viewModel.currentStory) {
-            viewModel.currentStory?.let { Log.d(logTag, it.title) }
+            viewModel.currentStory?.let { Log.d(LOG_TAG, it.title) }
             viewModel.fetchVotes()
         }
 
         LaunchedEffect(messages.value.lastOrNull()) {
             val message = messages.value.lastOrNull() ?: return@LaunchedEffect
-            Log.d(logTag, "Message: $message")
+            Log.d(LOG_TAG, "Message: $message")
 
             when (message) {
                 is ParticipantAdd -> {
-                    Log.d(logTag, "participant add")
+                    Log.d(LOG_TAG, "participant add")
                     val participant = viewModel.getUser(message.participants.id).await()
                     viewModel.addParticipant(participant)
                 }
                 is ParticipantRemove -> {
-                    Log.d(logTag, "participant remove")
+                    Log.d(LOG_TAG, "participant remove")
                     viewModel.removeParticipant(message.participants.id)
                 }
                 is RevealVotes -> {
-                    Log.d(logTag, "reveal votes")
-                    if (currentStory?.id == message.reveal.story_id) {
+                    Log.d(LOG_TAG, "reveal votes")
+                    if (currentStory?.id == message.reveal.storyId) {
                         viewModel.revealVotes(message.reveal.value)
                     }
                 }
                 is ResetVotes -> {
-                    Log.d(logTag, "reset votes")
-                    if (currentStory?.id == message.reset.story_id) {
+                    Log.d(LOG_TAG, "reset votes")
+                    if (currentStory?.id == message.reset.storyId) {
                         viewModel.clearVotes()
                         viewModel.revealVotes(false)
                     }
                 }
                 is VoteUpdate -> {
-                    Log.d(logTag, "vote update")
-                    if (currentStory?.id == message.vote.story_id) {
+                    Log.d(LOG_TAG, "vote update")
+                    if (currentStory?.id == message.vote.storyId) {
                         viewModel.updateVote(message.vote)
                     }
                 }
                 is AddStory -> {
-                    Log.d(logTag, "add story")
+                    Log.d(LOG_TAG, "add story")
                     viewModel.addStory(message.story)
                 }
                 is RemoveStory -> {
-                    Log.d(logTag, "remove story")
+                    Log.d(LOG_TAG, "remove story")
                     viewModel.removeStory(message.story)
                 }
                 is Summon -> {
-                    Log.d(logTag, "summon")
+                    Log.d(LOG_TAG, "summon")
                     viewModel.summon(message.story)
                 }
             }
@@ -196,7 +197,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                             .weight(1f),
                                 )
                                 viewModel.currentStory?.let { story ->
-                                    if (story.is_revealed) {
+                                    if (story.isRevealed) {
                                         Box(
                                             modifier =
                                                 Modifier
@@ -206,7 +207,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                         ) {
                                             votes.value?.let {
                                                 for (vote in it) {
-                                                    if (vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id) {
+                                                    if (vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id) {
                                                         Text(
                                                             vote.value,
                                                             fontSize = 20.sp,
@@ -224,7 +225,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                     } else {
                                         val voted =
                                             votes.value?.any { vote ->
-                                                vote.user.id == participant.id && vote.story_id == viewModel.currentStory?.id
+                                                vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id
                                             } == true
                                         if (voted) {
                                             Box(
@@ -263,7 +264,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                 val blended = ColorUtils.blendARGB(base, background, 0.3f)
                 val adjustedColor = Color(blended)
                 viewModel.currentStory?.let {
-                    if (!it.is_revealed) {
+                    if (!it.isRevealed) {
                         ExtendedFloatingActionButton(
                             onClick = { viewModel.revealVotesSend(true) },
                             containerColor = adjustedColor,
@@ -313,9 +314,9 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
             },
             onJoinRoomClick = { code ->
                 if (code.length == 6) {
-                    viewModel.joinRoom(code) { Log.e(logTag, "Invalid room code: $code") }
+                    viewModel.joinRoom(code) { Log.e(LOG_TAG, "Invalid room code: $code") }
                 } else {
-                    Log.e(logTag, "Invalid room code: $code")
+                    Log.e(LOG_TAG, "Invalid room code: $code")
                 }
             },
         )

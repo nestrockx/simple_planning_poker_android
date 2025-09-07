@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val LOG_TAG = "AccountViewModel"
+
 @HiltViewModel
 class AccountViewModel
     @Inject
@@ -27,10 +29,6 @@ class AccountViewModel
         private val getUserInfoUseCase: GetUserInfoUseCase,
         private val logoutUseCase: LogoutUseCase,
     ) : ViewModel() {
-        companion object {
-            private const val LOG_TAG = "AccountViewModel"
-        }
-
         var isLoggedOut by mutableStateOf(false)
             private set
 

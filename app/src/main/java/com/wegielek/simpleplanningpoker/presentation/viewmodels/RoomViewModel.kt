@@ -37,6 +37,8 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
 
+private const val LOG_TAG = "RoomViewModel"
+
 @HiltViewModel
 class RoomViewModel
     @Inject
@@ -55,10 +57,6 @@ class RoomViewModel
         private val createVoteUseCase: CreateVoteUseCase,
         private val deleteVoteUseCase: DeleteVoteUseCase,
     ) : ViewModel() {
-        companion object {
-            private const val LOG_TAG = "RoomViewModel"
-        }
-
         private var repeat = 0
         private val repeatLimit = 10
 
@@ -235,7 +233,7 @@ class RoomViewModel
             newStoryTitle = newNewStoryTitle
         }
 
-        fun clearNewStoryTitle() {
+        private fun clearNewStoryTitle() {
             newStoryTitle = ""
         }
 
@@ -255,7 +253,7 @@ class RoomViewModel
                 try {
                     Log.d(LOG_TAG, "Creating room with name: $name and type: $type")
                     val roomData: Room = createRoomUseCase(name, type)
-                    val storyData: Story = createStoryUseCase(roomData.id, "Story")
+                    createStoryUseCase(roomData.id, "Story")
                     roomCode = roomData.code
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error creating room: ${e.message}")
@@ -269,6 +267,7 @@ class RoomViewModel
                 try {
                     if (newStoryTitle.isNotEmpty()) {
                         val storyData: Story = createStoryUseCase(_room.value!!.id, newStoryTitle)
+                        clearNewStoryTitle()
                         sendToWebsocket(
                             JSONObject()
                                 .put("action", "add_story")
@@ -339,9 +338,9 @@ class RoomViewModel
                 getUserInfoUseCase()
             }
 
-        fun getUser(user_id: Int) =
+        fun getUser(userId: Int) =
             viewModelScope.async {
-                getUserUseCase(user_id)
+                getUserUseCase(userId)
             }
 
         // Votes
@@ -349,7 +348,7 @@ class RoomViewModel
             Log.d(LOG_TAG, "Revealing votes: $value")
             currentStory =
                 currentStory?.copy(
-                    is_revealed = value,
+                    isRevealed = value,
                 )
         }
 
@@ -390,7 +389,7 @@ class RoomViewModel
                             it.id,
                             story.title,
                             false,
-                            story.is_revealed,
+                            story.isRevealed,
                             "",
                         )
                 }
@@ -413,7 +412,7 @@ class RoomViewModel
                         it.id,
                         story.title,
                         true,
-                        story.is_revealed,
+                        story.isRevealed,
                         "",
                     )
             }

@@ -47,7 +47,7 @@ interface PokerApiService {
 
     @GET("/api/userinfo/{user_id}/")
     suspend fun getUser(
-        @Path("user_id") user_id: Int,
+        @Path("user_id") userId: Int,
     ): ParticipantUserDto
 
     // Room
@@ -74,7 +74,7 @@ interface PokerApiService {
 
     @GET("/api/stories/{room_id}/")
     suspend fun getRoomStories(
-        @Path("room_id") room_id: Int,
+        @Path("room_id") roomId: Int,
     ): List<StoryDto>
 
     @GET("/api/stories/{pk}/")
@@ -95,12 +95,12 @@ interface PokerApiService {
 
     @GET("/api/votes/{story_id}/")
     suspend fun getVotes(
-        @Path("story_id") story_id: Int,
+        @Path("story_id") storyId: Int,
     ): List<VoteDto>
 
     @DELETE("/api/votes/{story_id}/delete/")
     suspend fun deleteVote(
-        @Path("story_id") story_id: Int,
+        @Path("story_id") storyId: Int,
     )
 
     // Profile

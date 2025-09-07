@@ -35,20 +35,20 @@ fun ParticipantsDto.toDomain() =
 
 fun RevealDto.toDomain() =
     Reveal(
-        story_id = story_id,
+        storyId = storyId,
         username = username,
         value = value,
     )
 
 fun ResetDto.toDomain() =
     Reset(
-        story_id = story_id,
+        storyId = storyId,
         username = username,
     )
 
 fun VoteDto.toDomain() =
     Vote(
-        story_id = story_id,
+        storyId = storyId,
         username = username,
         value = value,
     )
@@ -57,5 +57,5 @@ fun StoryDto.toDomain() =
     Story(
         id = id,
         title = title,
-        is_revealed = is_revealed,
+        isRevealed = isRevealed,
     )

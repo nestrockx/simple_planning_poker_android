@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,8 +91,18 @@ fun RegistrationForm(
             onValueChange = { viewModel.onUsernameChanged(it) },
             label = { Text("Username") },
             singleLine = true,
+            isError = viewModel.usernameError != null,
             modifier = Modifier.fillMaxWidth(),
         )
+
+        viewModel.usernameError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.Start),
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -100,8 +111,18 @@ fun RegistrationForm(
             onValueChange = { viewModel.onNicknameChanged(it) },
             label = { Text("Display name") },
             singleLine = true,
+            isError = viewModel.nicknameError != null,
             modifier = Modifier.fillMaxWidth(),
         )
+
+        viewModel.nicknameError?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.Start),
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -122,6 +143,7 @@ fun RegistrationForm(
                     Icon(imageVector = image, contentDescription = null)
                 }
             },
+            isError = viewModel.passwordError != null,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions =
                 KeyboardOptions(
@@ -129,6 +151,15 @@ fun RegistrationForm(
                     imeAction = ImeAction.Done,
                 ),
         )
+
+        viewModel.passwordError?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.align(Alignment.Start),
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

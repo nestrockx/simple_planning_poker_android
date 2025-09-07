@@ -1,9 +1,11 @@
 package com.wegielek.simpleplanningpoker.domain.models.room
 
+import com.google.gson.annotations.SerializedName
+
 data class Vote(
     val id: Int,
-    val story_id: Int,
+    @SerializedName("story_id") val storyId: Int,
     val user: ParticipantUser,
     val value: String,
-    val voted_at: String,
+    @SerializedName("voted_at") val votedAt: String,
 )

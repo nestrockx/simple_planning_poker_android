@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -51,20 +51,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
 import kotlinx.coroutines.launch
 
+private const val LOG_TAG = "StoriesSidebar"
+
 @Composable
 fun StoriesSidebar(
     viewModel: RoomViewModel = hiltViewModel(),
     content: @Composable () -> Unit,
 ) {
-    val logTag = "StoriesSidebar"
-
     val context = LocalContext.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val room = viewModel.room.collectAsState()
     val stories = viewModel.stories.collectAsState()
-    val votes = viewModel.votes.collectAsState()
+//    val votes = viewModel.votes.collectAsState()
     val currentStory = viewModel.currentStory
 
     val density = LocalDensity.current
@@ -86,9 +86,7 @@ fun StoriesSidebar(
 
     fun onAddStory() {
         viewModel.createStory()
-        viewModel.clearNewStoryTitle()
         keyboardController?.hide()
-//        viewModel.send()
     }
 
     ModalNavigationDrawer(
@@ -125,7 +123,7 @@ fun StoriesSidebar(
                                                         .size(30.dp)
                                                         .clickable {
                                                             Log.d(
-                                                                logTag,
+                                                                LOG_TAG,
                                                                 "Remove ${item.title}",
                                                             )
                                                             viewModel.deleteStory(item.id)
@@ -221,7 +219,7 @@ fun StoriesSidebar(
                         onClick = { viewModel.clearRoomCode(context) },
                     ) {
                         Icon(
-                            Icons.Default.Cancel,
+                            Icons.AutoMirrored.Outlined.ExitToApp,
                             contentDescription = "Exit room",
                             modifier = Modifier.size(28.dp),
                         )
