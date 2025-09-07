@@ -412,7 +412,6 @@ class RoomViewModel
         }
 
         fun showVotingDialog() {
-            Log.d(LOG_TAG, "kurwa")
             votingDialogVisible = true
         }
 
