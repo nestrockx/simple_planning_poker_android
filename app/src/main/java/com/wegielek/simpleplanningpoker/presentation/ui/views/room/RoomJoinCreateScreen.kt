@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,11 +43,13 @@ fun RoomJoinCreateScreen(
 ) {
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
+
     var createRoomLoading by remember { mutableStateOf(false) }
     var joinRoomLoading by remember { mutableStateOf(false) }
 
     val roomName = viewModel.roomNameField
     val roomCode = viewModel.roomCodeField
+    val roomType = viewModel.roomTypeField
 
     val verticalScreenWidth =
         min(
@@ -55,10 +58,13 @@ fun RoomJoinCreateScreen(
         )
     val horizontalPadding = 24.dp
 
-    fun onCreateRoom(name: String) {
+    fun onCreateRoom(
+        name: String,
+        type: RoomType,
+    ) {
         if (name.isBlank()) return
         createRoomLoading = true
-        onCreateRoomClick(name, "default") // TODO add room options
+        onCreateRoomClick(name, type.name.lowercase())
         scope.launch {
             delay(2000)
             createRoomLoading = false
@@ -97,11 +103,16 @@ fun RoomJoinCreateScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
+            RoomTypeSelector(
+                selectedRoomType = roomType,
+                onRoomTypeSelected = { viewModel.onRoomTypeChanged(it) },
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             if (!createRoomLoading) {
                 Button(
-                    onClick = { onCreateRoom(roomName) },
+                    onClick = { onCreateRoom(roomName, roomType) },
                 ) {
                     Text("Create", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))
                 }

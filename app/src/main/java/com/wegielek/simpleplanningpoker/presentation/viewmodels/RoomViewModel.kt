@@ -26,6 +26,7 @@ import com.wegielek.simpleplanningpoker.domain.usecases.vote.DeleteVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.GetVotesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
+import com.wegielek.simpleplanningpoker.presentation.ui.views.room.RoomType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -38,6 +39,7 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 private const val LOG_TAG = "RoomViewModel"
+private const val REPEAT_LIMIT = 10
 
 @HiltViewModel
 class RoomViewModel
@@ -50,15 +52,14 @@ class RoomViewModel
         private val deleteStoryUseCase: DeleteStoryUseCase,
         private val getVotesUseCase: GetVotesUseCase,
         private val createRoomUseCase: CreateRoomUseCase,
-        private val webSocketUseCase: WebSocketUseCase,
         private val getUserInfoUseCase: GetUserInfoUseCase,
         private val getUserUseCase: GetUserUseCase,
         private val joinRoomUseCase: JoinRoomUseCase,
         private val createVoteUseCase: CreateVoteUseCase,
         private val deleteVoteUseCase: DeleteVoteUseCase,
+        private val webSocketUseCase: WebSocketUseCase,
     ) : ViewModel() {
         private var repeat = 0
-        private val repeatLimit = 10
 
         var votingDialogVisible by mutableStateOf(false)
 
@@ -72,8 +73,9 @@ class RoomViewModel
 
         var roomNameField by mutableStateOf("")
             private set
-
         var roomCodeField by mutableStateOf("")
+            private set
+        var roomTypeField by mutableStateOf(RoomType.DEFAULT)
             private set
 
         var newStoryTitle: String by mutableStateOf("")
@@ -152,7 +154,7 @@ class RoomViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 if (!roomCode.isNotEmpty()) {
                     repeat += 1
-                    if (repeat <= repeatLimit) {
+                    if (repeat <= REPEAT_LIMIT) {
                         delay(100)
                         Log.d("Websocket", "Reconnecting...")
                         connect(context)
@@ -243,6 +245,10 @@ class RoomViewModel
 
         fun onRoomCodeChanged(newRoomCode: String) {
             roomCodeField = newRoomCode
+        }
+
+        fun onRoomTypeChanged(newRoomType: RoomType) {
+            roomTypeField = newRoomType
         }
 
         fun createRoom(

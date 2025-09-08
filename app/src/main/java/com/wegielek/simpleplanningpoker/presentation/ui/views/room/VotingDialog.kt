@@ -21,25 +21,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
-enum class VotingType {
-    DEFAULT, // 1..20
-    FIBONACCI, // 1,2,3,5,8,13,21,34,55
-    TSHIRTS, // XS,S,M,L,XL,XXL
-    POWERS_OF_2, // 1,2,4,8,16,32,64
-}
+// enum class VotingType {
+//    DEFAULT, // 1..20
+//    FIBONACCI, // 1,2,3,5,8,13,21,34,55
+//    TSHIRTS, // XS,S,M,L,XL,XXL
+//    POWERS_OF_2, // 1,2,4,8,16,32,64
+// }
 
 @Composable
 fun VotingDialog(
     onDismiss: () -> Unit,
     onValueSelected: (String) -> Unit,
-    type: VotingType = VotingType.DEFAULT,
+    votingType: RoomType,
 ) {
     val options: List<String> =
-        when (type) {
-            VotingType.DEFAULT -> (1..20).map { it.toString() }
-            VotingType.FIBONACCI -> listOf(1, 2, 3, 5, 8, 13, 21, 34, 55).map { it.toString() }
-            VotingType.TSHIRTS -> listOf("XS", "S", "M", "L", "XL", "XXL")
-            VotingType.POWERS_OF_2 -> listOf(1, 2, 4, 8, 16, 32, 64).map { it.toString() }
+        when (votingType) {
+            RoomType.DEFAULT -> (1..20).map { it.toString() }
+            RoomType.FIBONACCI -> listOf(1, 2, 3, 5, 8, 13, 21, 34, 55).map { it.toString() }
+            RoomType.TSHIRTS -> listOf("XS", "S", "M", "L", "XL", "XXL")
+            RoomType.POWERS -> listOf(1, 2, 4, 8, 16, 32, 64).map { it.toString() }
         }
 
     Dialog(onDismissRequest = onDismiss) {

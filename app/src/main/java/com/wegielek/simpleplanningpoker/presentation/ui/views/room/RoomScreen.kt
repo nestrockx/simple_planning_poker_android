@@ -61,6 +61,8 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    val room = viewModel.room.collectAsState()
+
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
@@ -168,6 +170,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                 VotingDialog(
                     onDismiss = { viewModel.hideVotingDialog() },
                     onValueSelected = { viewModel.setVoteValue(it) },
+                    votingType = RoomType.valueOf(room.value?.type?.uppercase() ?: "DEFAULT"),
                 )
             }
 
