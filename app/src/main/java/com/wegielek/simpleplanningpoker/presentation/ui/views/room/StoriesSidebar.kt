@@ -110,7 +110,6 @@ fun StoriesSidebar(
                                     selected = item.id == currentStory?.id,
                                     onClick = {
                                         viewModel.updateCurrentStory(item)
-//                                    scope.launch { drawerState.close() }
                                     },
                                     badge = {
                                         if (storyList.size > 1) {
@@ -126,7 +125,7 @@ fun StoriesSidebar(
                                                                 LOG_TAG,
                                                                 "Remove ${item.title}",
                                                             )
-                                                            viewModel.deleteStory(item.id)
+                                                            viewModel.deleteStory(item)
                                                         }.padding(4.dp),
                                             )
                                         }
@@ -206,15 +205,6 @@ fun StoriesSidebar(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End,
                 ) {
-//                    Button(
-//                        onClick = { viewModel.clearRoomCode(context) },
-//                        colors =
-//                            ButtonDefaults.buttonColors(
-//                                containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
-//                            ),
-//                    ) {
-//                        Text("Exit", fontWeight = FontWeight.Bold)
-//                    }
                     IconButton(
                         onClick = { viewModel.clearRoomCode(context) },
                     ) {

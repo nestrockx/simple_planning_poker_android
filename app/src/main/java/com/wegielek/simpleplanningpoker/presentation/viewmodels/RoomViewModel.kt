@@ -282,10 +282,17 @@ class RoomViewModel
             }
         }
 
-        fun deleteStory(pk: Int) {
+        fun deleteStory(story: Story) {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    deleteStoryUseCase(pk)
+                    deleteStoryUseCase(story.id)
+                    webSocketUseCase.sendMessage(
+                        JSONObject()
+                            .put("action", "remove_story")
+                            .put("story_id", story.id)
+                            .put("title", story.title)
+                            .toString(),
+                    )
                 } catch (e: Exception) {
                     Log.e(LOG_TAG, "Error deleting story: ${e.message}")
                 }
