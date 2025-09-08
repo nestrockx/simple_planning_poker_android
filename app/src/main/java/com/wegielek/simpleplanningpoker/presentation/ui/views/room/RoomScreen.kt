@@ -61,8 +61,6 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val room = viewModel.room.collectAsState()
-
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
@@ -105,7 +103,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     }
 
     if (viewModel.roomCode.isNotEmpty()) {
-//        val room = viewModel.room.collectAsState()
+        val room = viewModel.room.collectAsState()
 //        val stories = viewModel.stories.collectAsState()
         val votes = viewModel.votes.collectAsState()
         val participants = viewModel.participants.collectAsState()

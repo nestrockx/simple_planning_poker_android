@@ -57,7 +57,6 @@ fun RoomTypeSelector(
                             Text(text = "Powers\n2 4 8 16..")
                         }
                     }
-//                        Text(text = type.name.lowercase().replaceFirstChar { it.uppercase() })
                 }
             }
         }
