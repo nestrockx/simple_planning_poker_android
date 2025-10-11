@@ -91,9 +91,13 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     LaunchedEffect(viewModel.isConnected) {
         if (viewModel.isConnected) {
             viewModel.joinRoom()
-            val participant = viewModel.getUserInfo().await()
-            Log.d(LOG_TAG, "New participant: $participant")
-            viewModel.addParticipant(participant)
+            try {
+                val participant = viewModel.getUserInfo().await()
+                Log.d(LOG_TAG, "New participant: $participant")
+                viewModel.addParticipant(participant)
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "Error adding participant: ${e.message}")
+            }
         }
     }
 
@@ -122,8 +126,12 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
             when (message) {
                 is ParticipantAdd -> {
                     Log.d(LOG_TAG, "participant add")
-                    val participant = viewModel.getUser(message.participants.id).await()
-                    viewModel.addParticipant(participant)
+                    try {
+                        val participant = viewModel.getUser(message.participants.id).await()
+                        viewModel.addParticipant(participant)
+                    } catch (e: Exception) {
+                        Log.e(LOG_TAG, "Error adding participant: ${e.message}")
+                    }
                 }
                 is ParticipantRemove -> {
                     Log.d(LOG_TAG, "participant remove")

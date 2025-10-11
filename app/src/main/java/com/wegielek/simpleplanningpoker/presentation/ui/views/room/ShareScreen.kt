@@ -92,7 +92,7 @@ fun ShareScreen(onNavigate: () -> Unit) {
             )
         } ?: run {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Join or create a room first", fontSize = 20.sp, modifier = Modifier.padding(20.dp))
+                Text("Join or create a room", fontSize = 20.sp, modifier = Modifier.padding(20.dp))
                 Button(onClick = { onNavigate() }) { Text("Go") }
             }
         }

@@ -39,7 +39,7 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 private const val LOG_TAG = "RoomViewModel"
-private const val REPEAT_LIMIT = 10
+private const val REPEAT_LIMIT = 5
 
 @HiltViewModel
 class RoomViewModel
@@ -378,25 +378,6 @@ class RoomViewModel
 
         fun updateVote(vote: com.wegielek.simpleplanningpoker.domain.models.websocket.Vote) {
             fetchVotes()
-//            if (_votes.value.isNullOrEmpty()) {
-//            fetchVotes()
-//                return
-//            }
-
-//            val participantUsernames = _participants.value?.map { it.username } ?: emptyList()
-//
-//            if (vote.username in participantUsernames) {
-//                _votes.value =
-//                    _votes.value?.map {
-//                        if (it.user.username == vote.username) {
-//                            it.copy(value = vote.value.toString().replace("\"", ""))
-//                        } else {
-//                            it
-//                        }
-//                    }
-//            } else {
-//                _votes.value = _votes.value?.plus(Vote(vote.value))
-//            }
         }
 
         // Stories
@@ -489,7 +470,11 @@ class RoomViewModel
 
         fun resetVotes() {
             viewModelScope.launch(Dispatchers.IO) {
-                currentStory?.id?.let { deleteVoteUseCase(it) }
+                try {
+                    currentStory?.id?.let { deleteVoteUseCase(it) }
+                } catch (e: Exception) {
+                    Log.e(LOG_TAG, "Error deleting vote: ${e.message}")
+                }
             }
             _votes.value = _votes.value?.filter { false }
             sendToWebsocket(

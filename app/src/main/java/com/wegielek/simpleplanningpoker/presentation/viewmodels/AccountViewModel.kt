@@ -59,6 +59,7 @@ class AccountViewModel
 
         fun logout(context: Context) {
             viewModelScope.launch(Dispatchers.IO) {
+                Preferences.clearRoomCodeFromStorage(context)
                 Preferences.clearToken(context)
                 logoutUseCase()
                 isLoggedOut = true
