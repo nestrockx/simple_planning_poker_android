@@ -91,7 +91,6 @@ class RoomViewModel
         val votes: StateFlow<List<Vote>?> = _votes
         private val _participants = MutableStateFlow<List<ParticipantUser>?>(null)
         val participants: StateFlow<List<ParticipantUser>?> = _participants
-
         private val _messages = MutableStateFlow<List<WebSocketMessage>>(emptyList())
         val messages: StateFlow<List<WebSocketMessage>> = _messages.asStateFlow()
 
@@ -147,7 +146,6 @@ class RoomViewModel
             }
 
             connect(context)
-//            webSocketUseCase.connect(roomCode)
         }
 
         private fun connect(context: Context) {
@@ -359,6 +357,15 @@ class RoomViewModel
         // Votes
         fun revealVotes(value: Boolean) {
             Log.d(LOG_TAG, "Revealing votes: $value")
+            _stories.value =
+                _stories.value?.map {
+                    if (it.id == currentStory?.id) {
+                        it.copy(isRevealed = value)
+                    } else {
+                        it
+                    }
+                }
+
             currentStory =
                 currentStory?.copy(
                     isRevealed = value,

@@ -57,7 +57,10 @@ fun AccountScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
+        contentAlignment = Alignment.Center,
+    ) {
         Row(Modifier.padding(20.dp)) {
             Column {
                 Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)

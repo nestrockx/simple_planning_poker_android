@@ -165,11 +165,6 @@ fun RegistrationForm(
 
         if (!loading) {
             Button(
-//            colors =
-//                ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.secondary,
-//                ),
                 onClick = { onRegister(username, nickname, password) },
             ) {
                 Text("Register", modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp))

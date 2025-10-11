@@ -146,7 +146,6 @@ fun AuthScreen(
                                     ),
                                 modifier = Modifier.padding(0.dp),
                                 onClick = { viewModel.setAuthForm(AuthState.Register) },
-//                        shape = RoundedCornerShape(8.dp),
                             ) { Text("Register", fontSize = 16.sp, fontWeight = FontWeight.Normal) }
                         } else if (viewModel.authState == AuthState.Register) {
                             Button(

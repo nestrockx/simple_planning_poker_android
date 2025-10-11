@@ -21,13 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
-// enum class VotingType {
-//    DEFAULT, // 1..20
-//    FIBONACCI, // 1,2,3,5,8,13,21,34,55
-//    TSHIRTS, // XS,S,M,L,XL,XXL
-//    POWERS_OF_2, // 1,2,4,8,16,32,64
-// }
-
 @Composable
 fun VotingDialog(
     onDismiss: () -> Unit,
