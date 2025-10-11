@@ -81,6 +81,9 @@ class AccountViewModel
         fun updateNickname() {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
+                    if (nicknameField.isBlank()) {
+                        throw Exception("Nickname cannot be empty")
+                    }
                     updateNicknameUseCase(nicknameField.trim())
                     fetchUserInfo()
                 } catch (e: Exception) {
