@@ -38,7 +38,6 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
 
-private const val LOG_TAG = "RoomViewModel"
 private const val REPEAT_LIMIT = 5
 
 @HiltViewModel
@@ -59,6 +58,8 @@ class RoomViewModel
         private val deleteVoteUseCase: DeleteVoteUseCase,
         private val webSocketUseCase: WebSocketUseCase,
     ) : ViewModel() {
+        val logTag = "RoomViewModel"
+
         private var repeat = 0
 
         var votingDialogVisible by mutableStateOf(false)
@@ -123,9 +124,9 @@ class RoomViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     val story = getStoryUseCase(pk)
-                    Log.d(LOG_TAG, "Story: $story")
+                    Log.d(logTag, "Story: $story")
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error fetching story: ${e.message}")
+                    Log.e(logTag, "Error fetching story: ${e.message}")
                 }
             }
         }
@@ -190,14 +191,14 @@ class RoomViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (roomCode.isNotEmpty()) {
-                        Log.d(LOG_TAG, "Fetching room with code: $roomCode")
+                        Log.d(logTag, "Fetching room with code: $roomCode")
                         _room.value = getRoomUseCase(roomCode)
                     }
                 } catch (
                     e: Exception,
                 ) {
                     Log.e(
-                        LOG_TAG,
+                        logTag,
                         "Error fetching room: ${e.message}",
                     )
                 }
@@ -205,7 +206,7 @@ class RoomViewModel
                 try {
                     _stories.value = _room.value?.let { getStoriesUseCase(it.id) }
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error fetching stories: ${e.message}")
+                    Log.e(logTag, "Error fetching stories: ${e.message}")
                 }
 
                 _stories.value?.size?.let {
@@ -213,7 +214,7 @@ class RoomViewModel
                         currentStory = _stories.value?.get(0)
                     }
                 }
-                Log.d(LOG_TAG, "Stories: ${_stories.value}")
+                Log.d(logTag, "Stories: ${_stories.value}")
             }
         }
 
@@ -223,7 +224,7 @@ class RoomViewModel
                 try {
                     _votes.value = currentStory?.let { getVotesUseCase(it.id) }
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error fetching votes: ${e.message}")
+                    Log.e(logTag, "Error fetching votes: ${e.message}")
                 }
             }
         }
@@ -255,12 +256,12 @@ class RoomViewModel
         ) {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    Log.d(LOG_TAG, "Creating room with name: $name and type: $type")
+                    Log.d(logTag, "Creating room with name: $name and type: $type")
                     val roomData: Room = createRoomUseCase(name, type)
                     createStoryUseCase(roomData.id, "Story")
                     roomCode = roomData.code
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error creating room: ${e.message}")
+                    Log.e(logTag, "Error creating room: ${e.message}")
                 }
             }
         }
@@ -281,7 +282,7 @@ class RoomViewModel
                         )
                     }
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error creating story: ${e.message}")
+                    Log.e(logTag, "Error creating story: ${e.message}")
                 }
             }
         }
@@ -298,7 +299,7 @@ class RoomViewModel
                             .toString(),
                     )
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error deleting story: ${e.message}")
+                    Log.e(logTag, "Error deleting story: ${e.message}")
                 }
             }
         }
@@ -308,7 +309,7 @@ class RoomViewModel
                 try {
                     joinRoomUseCase(roomCode)
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error joining room: ${e.message}")
+                    Log.e(logTag, "Error joining room: ${e.message}")
                 }
             }
         }
@@ -334,7 +335,7 @@ class RoomViewModel
                     if (list.none { it.id == participant.id }) {
                         list + participant
                     } else {
-                        Log.d(LOG_TAG, "Participant already exists: ${participant.profile.nickname}")
+                        Log.d(logTag, "Participant already exists: ${participant.profile.nickname}")
                         list
                     }
                 }
@@ -356,7 +357,7 @@ class RoomViewModel
 
         // Votes
         fun revealVotes(value: Boolean) {
-            Log.d(LOG_TAG, "Revealing votes: $value")
+            Log.d(logTag, "Revealing votes: $value")
             _stories.value =
                 _stories.value?.map {
                     if (it.id == currentStory?.id) {
@@ -436,7 +437,7 @@ class RoomViewModel
                 try {
                     currentStory?.let { createVoteUseCase(it.id, selectedVoteValue) }
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error creating vote: ${e.message}")
+                    Log.e(logTag, "Error creating vote: ${e.message}")
                 }
             }
             currentStory?.let {
@@ -473,7 +474,7 @@ class RoomViewModel
                 try {
                     currentStory?.id?.let { deleteVoteUseCase(it) }
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error deleting vote: ${e.message}")
+                    Log.e(logTag, "Error deleting vote: ${e.message}")
                 }
             }
             _votes.value = _votes.value?.filter { false }

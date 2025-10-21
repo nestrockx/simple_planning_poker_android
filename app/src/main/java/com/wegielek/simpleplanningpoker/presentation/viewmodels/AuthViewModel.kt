@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import javax.inject.Inject
 
-private const val LOG_TAG = "AuthViewModel"
-
 sealed class AuthState {
     object Login : AuthState()
 
@@ -33,6 +31,8 @@ class AuthViewModel
         private val registerUseCase: RegisterUseCase,
         private val guestLoginUseCase: GuestLoginUseCase,
     ) : ViewModel() {
+        val logTag = "AuthViewModel"
+
         var loginResult by mutableStateOf(false)
             private set
         var guestLoginResult by mutableStateOf(false)
@@ -120,11 +120,11 @@ class AuthViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (nicknameError == null && passwordError == null) {
-                        Log.d(LOG_TAG, "Logging in with username: $username")
+                        Log.d(logTag, "Logging in with username: $username")
                         loginResult = loginUseCase(username, password)
                     }
                 } catch (e: HttpException) {
-                    Log.e(LOG_TAG, "Login failed", e)
+                    Log.e(logTag, "Login failed", e)
                 }
             }
         }
@@ -134,13 +134,13 @@ class AuthViewModel
                 try {
                     if (nicknameError == null && nicknameError == null && passwordError == null) {
                         Log.d(
-                            LOG_TAG,
+                            logTag,
                             "Registering with username: $username, nickname: $nickname",
                         )
                         registerResult = registerUseCase(username, nickname, password)
                     }
                 } catch (e: HttpException) {
-                    Log.e(LOG_TAG, "Registration failed", e)
+                    Log.e(logTag, "Registration failed", e)
                 }
             }
         }
@@ -149,11 +149,11 @@ class AuthViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (nicknameError == null) {
-                        Log.d(LOG_TAG, "Logging : $nickname")
+                        Log.d(logTag, "Logging : $nickname")
                         guestLoginResult = guestLoginUseCase(nickname)
                     }
                 } catch (e: HttpException) {
-                    Log.e(LOG_TAG, "Guest login failed", e)
+                    Log.e(logTag, "Guest login failed", e)
                 }
             }
         }

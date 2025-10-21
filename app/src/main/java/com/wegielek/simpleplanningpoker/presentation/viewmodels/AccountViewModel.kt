@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val LOG_TAG = "AccountViewModel"
-
 @HiltViewModel
 class AccountViewModel
     @Inject
@@ -29,6 +27,8 @@ class AccountViewModel
         private val getUserInfoUseCase: GetUserInfoUseCase,
         private val logoutUseCase: LogoutUseCase,
     ) : ViewModel() {
+        val logTag = "AccountViewModel"
+
         var isLoggedOut by mutableStateOf(false)
             private set
 
@@ -48,11 +48,11 @@ class AccountViewModel
         private fun fetchUserInfo() {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    Log.d(LOG_TAG, "Fetching user data")
+                    Log.d(logTag, "Fetching user data")
                     _user.value = getUserInfoUseCase()
                     nicknameField = _user.value?.profile?.nickname ?: ""
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error fetching user data", e)
+                    Log.e(logTag, "Error fetching user data", e)
                 }
             }
         }
@@ -87,7 +87,7 @@ class AccountViewModel
                     updateNicknameUseCase(nicknameField.trim())
                     fetchUserInfo()
                 } catch (e: Exception) {
-                    Log.e(LOG_TAG, "Error updating nickname", e)
+                    Log.e(logTag, "Error updating nickname", e)
                 }
             }
         }

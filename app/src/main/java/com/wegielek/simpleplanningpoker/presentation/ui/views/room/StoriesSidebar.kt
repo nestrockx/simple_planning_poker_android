@@ -47,17 +47,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
 import kotlinx.coroutines.launch
-
-private const val LOG_TAG = "StoriesSidebar"
 
 @Composable
 fun StoriesSidebar(
     viewModel: RoomViewModel = hiltViewModel(),
     content: @Composable () -> Unit,
 ) {
+    val logTag = "StoriesSidebar"
+
     val context = LocalContext.current
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -122,7 +122,7 @@ fun StoriesSidebar(
                                                         .size(30.dp)
                                                         .clickable {
                                                             Log.d(
-                                                                LOG_TAG,
+                                                                logTag,
                                                                 "Remove ${item.title}",
                                                             )
                                                             viewModel.deleteStory(item)

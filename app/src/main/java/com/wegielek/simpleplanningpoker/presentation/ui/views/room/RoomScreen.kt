@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -54,10 +55,10 @@ import com.wegielek.simpleplanningpoker.domain.models.websocket.Summon
 import com.wegielek.simpleplanningpoker.domain.models.websocket.VoteUpdate
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
 
-private const val LOG_TAG = "RoomScreen"
-
 @Composable
 fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
+    val logTag = "RoomScreen"
+
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -78,7 +79,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
     }
 
     LaunchedEffect(viewModel.roomCode) {
-        Log.d(LOG_TAG, "Room code: ${viewModel.roomCode}")
+        Log.d(logTag, "Room code: ${viewModel.roomCode}")
         viewModel.getRoomCode(context)
         if (viewModel.roomCode.isNotEmpty()) {
             viewModel.fetchRoom()
@@ -93,79 +94,78 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
             viewModel.joinRoom()
             try {
                 val participant = viewModel.getUserInfo().await()
-                Log.d(LOG_TAG, "New participant: $participant")
+                Log.d(logTag, "New participant: $participant")
                 viewModel.addParticipant(participant)
             } catch (e: Exception) {
-                Log.e(LOG_TAG, "Error adding participant: ${e.message}")
+                Log.e(logTag, "Error adding participant: ${e.message}")
             }
         }
     }
 
     LaunchedEffect(viewModel.selectedVoteValue) {
-        Log.d(LOG_TAG, "Selected vote value: ${viewModel.selectedVoteValue}")
+        Log.d(logTag, "Selected vote value: ${viewModel.selectedVoteValue}")
         viewModel.updateUserVote()
     }
 
     if (viewModel.roomCode.isNotEmpty()) {
-        val room = viewModel.room.collectAsState()
-//        val stories = viewModel.stories.collectAsState()
-        val votes = viewModel.votes.collectAsState()
-        val participants = viewModel.participants.collectAsState()
-        val messages = viewModel.messages.collectAsState()
+        val room by viewModel.room.collectAsState()
+        val votes by viewModel.votes.collectAsState()
+        val participants by viewModel.participants.collectAsState()
+        val messages by viewModel.messages.collectAsState()
         val currentStory = viewModel.currentStory
 
         LaunchedEffect(viewModel.currentStory) {
-            viewModel.currentStory?.let { Log.d(LOG_TAG, it.title) }
+            viewModel.currentStory?.let { Log.d(logTag, it.title) }
             viewModel.fetchVotes()
         }
 
-        LaunchedEffect(messages.value.lastOrNull()) {
-            val message = messages.value.lastOrNull() ?: return@LaunchedEffect
-            Log.d(LOG_TAG, "Message: $message")
+        LaunchedEffect(messages.lastOrNull()) {
+            val message = messages.lastOrNull() ?: return@LaunchedEffect
+            Log.d(logTag, "Message: $message")
 
             when (message) {
                 is ParticipantAdd -> {
-                    Log.d(LOG_TAG, "participant add")
+                    Log.d(logTag, "participant add")
                     try {
                         val participant = viewModel.getUser(message.participants.id).await()
                         viewModel.addParticipant(participant)
                     } catch (e: Exception) {
-                        Log.e(LOG_TAG, "Error adding participant: ${e.message}")
+                        Log.e(logTag, "Error adding participant: ${e.message}")
                     }
                 }
                 is ParticipantRemove -> {
-                    Log.d(LOG_TAG, "participant remove")
+                    Log.d(logTag, "participant remove")
                     viewModel.removeParticipant(message.participants.id)
                 }
                 is RevealVotes -> {
-                    Log.d(LOG_TAG, "reveal votes")
+                    Log.d(logTag, "reveal votes")
                     if (currentStory?.id == message.reveal.storyId) {
                         viewModel.revealVotes(message.reveal.value)
                     }
                 }
                 is ResetVotes -> {
-                    Log.d(LOG_TAG, "reset votes")
+                    Log.d(logTag, "reset votes")
                     if (currentStory?.id == message.reset.storyId) {
                         viewModel.clearVotes()
                         viewModel.revealVotes(false)
                     }
                 }
                 is VoteUpdate -> {
-                    Log.d(LOG_TAG, "vote update")
+                    Log.d(logTag, "vote update")
                     if (currentStory?.id == message.vote.storyId) {
                         viewModel.updateVote(message.vote)
                     }
                 }
                 is AddStory -> {
-                    Log.d(LOG_TAG, "add story")
+                    Log.d(logTag, "add story")
                     viewModel.addStory(message.story)
                 }
                 is RemoveStory -> {
-                    Log.d(LOG_TAG, "remove story")
+                    Log.d(logTag, "remove story")
                     viewModel.removeStory(message.story)
                 }
                 is Summon -> {
-                    Log.d(LOG_TAG, "summon")
+                    Log.d(logTag, "summon")
                     viewModel.summon(message.story)
                 }
             }
@@ -176,7 +176,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                 VotingDialog(
                     onDismiss = { viewModel.hideVotingDialog() },
                     onValueSelected = { viewModel.setVoteValue(it) },
-                    votingType = RoomType.valueOf(room.value?.type?.uppercase() ?: "DEFAULT"),
+                    votingType = RoomType.valueOf(room?.type?.uppercase() ?: "DEFAULT"),
                 )
             }
 
@@ -186,7 +186,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxSize().padding(top = 70.dp),
                 ) {
-                    participants.value?.let { list ->
+                    participants?.let { list ->
                         items(list, key = { it.id }) { participant ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -214,7 +214,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                                     .clip(shape = CircleShape)
                                                     .background(color = MaterialTheme.colorScheme.primary),
                                         ) {
-                                            votes.value?.let {
+                                            votes?.let {
                                                 for (vote in it) {
                                                     if (vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id) {
                                                         Text(
@@ -233,7 +233,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                         }
                                     } else {
                                         val voted =
-                                            votes.value?.any { vote ->
+                                            votes?.any { vote ->
                                                 vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id
                                             } == true
                                         if (voted) {
@@ -323,9 +323,9 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
             },
             onJoinRoomClick = { code ->
                 if (code.length == 6) {
-                    viewModel.joinRoom(code) { Log.e(LOG_TAG, "Invalid room code: $code") }
+                    viewModel.joinRoom(code) { Log.e(logTag, "Invalid room code: $code") }
                 } else {
-                    Log.e(LOG_TAG, "Invalid room code: $code")
+                    Log.e(logTag, "Invalid room code: $code")
                 }
             },
         )
