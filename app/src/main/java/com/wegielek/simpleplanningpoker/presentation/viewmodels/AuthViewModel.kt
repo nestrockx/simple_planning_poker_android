@@ -121,7 +121,11 @@ class AuthViewModel
                 try {
                     if (nicknameError == null && passwordError == null) {
                         Log.d(logTag, "Logging in with username: $username")
-                        loginResult = loginUseCase(username, password)
+                        loginResult =
+                            loginUseCase(
+                                username.trim(),
+                                password.trim(),
+                            )
                     }
                 } catch (e: HttpException) {
                     Log.e(logTag, "Login failed", e)
@@ -137,7 +141,12 @@ class AuthViewModel
                             logTag,
                             "Registering with username: $username, nickname: $nickname",
                         )
-                        registerResult = registerUseCase(username, nickname, password)
+                        registerResult =
+                            registerUseCase(
+                                username.trim(),
+                                nickname.trim(),
+                                password.trim(),
+                            )
                     }
                 } catch (e: HttpException) {
                     Log.e(logTag, "Registration failed", e)
@@ -146,11 +155,12 @@ class AuthViewModel
         }
 
         fun guestLogin() {
+            if (!nickname.isNotEmpty()) return
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (nicknameError == null) {
                         Log.d(logTag, "Logging : $nickname")
-                        guestLoginResult = guestLoginUseCase(nickname)
+                        guestLoginResult = guestLoginUseCase(nickname.trim())
                     }
                 } catch (e: HttpException) {
                     Log.e(logTag, "Guest login failed", e)
