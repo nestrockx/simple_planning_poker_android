@@ -1,11 +1,14 @@
 package com.wegielek.simpleplanningpoker.presentation.ui.views
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -26,11 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.wegielek.simpleplanningpoker.R
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AccountViewModel
 
 @Composable
@@ -57,77 +62,86 @@ fun AccountScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(Modifier.padding(20.dp)) {
-            Column {
-                Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.padding(18.dp))
-                Text("Display name: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Column {
-                user.value?.username?.let { Text(it, fontSize = 20.sp) }
-                Spacer(modifier = Modifier.padding(6.dp))
-                if (!viewModel.isNicknameInEdit) {
-                    Spacer(modifier = Modifier.padding(6.dp))
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (!viewModel.isNicknameInEdit) {
-                        user.value
-                            ?.profile
-                            ?.nickname
-                            ?.let { Text(it, fontSize = 20.sp) }
-                    } else {
-                        OutlinedTextField(
-                            value = nickname,
-                            onValueChange = { viewModel.onNicknameChanged(it) },
-                            label = { Text("New nickname") },
-                            singleLine = true,
-                            modifier = Modifier.weight(1f),
-                        )
-                    }
-                    if (!viewModel.isNicknameInEdit) {
-                        IconButton(onClick = { viewModel.editNickname(true) }) {
-                            Icon(
-                                imageVector = Icons.Filled.ModeEdit,
-                                contentDescription = "Edit nickname",
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    } else {
-                        IconButton(onClick = {
-                            viewModel.editNickname(false)
-                            viewModel.updateNickname()
-                        }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = "Confirm nickname edit",
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    }
-                }
-            }
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(Modifier.fillMaxWidth().padding(0.dp), horizontalArrangement = Arrangement.Center) {
+            Icon(
+                painter = painterResource(R.drawable.pokerlogo),
+                contentDescription = "Poker logo",
+                Modifier.size(size = 100.dp).padding(0.dp),
+            )
         }
-        ExtendedFloatingActionButton(
-            onClick = {
-                viewModel.logout(context)
-            },
-            containerColor = adjustedColor,
-            modifier =
-                Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp),
-            icon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Logout,
-                    contentDescription = "Reveal votes",
-                )
-            },
-            text = { Text("Logout") },
-        )
+        Box(
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
+            contentAlignment = Alignment.Center,
+        ) {
+            Row(Modifier.padding(20.dp)) {
+                Column {
+                    Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.padding(18.dp))
+                    Text("Display name: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                }
+
+                Column {
+                    user.value?.username?.let { Text(it, fontSize = 20.sp) }
+                    Spacer(modifier = Modifier.padding(6.dp))
+                    if (!viewModel.isNicknameInEdit) {
+                        Spacer(modifier = Modifier.padding(6.dp))
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (!viewModel.isNicknameInEdit) {
+                            user.value
+                                ?.profile
+                                ?.nickname
+                                ?.let { Text(it, fontSize = 20.sp) }
+                        } else {
+                            OutlinedTextField(
+                                value = nickname,
+                                onValueChange = { viewModel.onNicknameChanged(it) },
+                                label = { Text("New nickname") },
+                                singleLine = true,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        if (!viewModel.isNicknameInEdit) {
+                            IconButton(onClick = { viewModel.editNickname(true) }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ModeEdit,
+                                    contentDescription = "Edit nickname",
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        } else {
+                            IconButton(onClick = {
+                                viewModel.editNickname(false)
+                                viewModel.updateNickname()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Check,
+                                    contentDescription = "Confirm nickname edit",
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            ExtendedFloatingActionButton(
+                onClick = {
+                    viewModel.logout(context)
+                },
+                containerColor = adjustedColor,
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                icon = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = "Reveal votes",
+                    )
+                },
+                text = { Text("Logout") },
+            )
+        }
     }
 }

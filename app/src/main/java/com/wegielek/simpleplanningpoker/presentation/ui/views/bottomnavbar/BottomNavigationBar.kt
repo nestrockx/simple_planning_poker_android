@@ -96,7 +96,10 @@ fun BottomNavigationBar(navController: NavController) {
                     onClick = {
                         if (currentRoute != screen.route) {
                             navController.navigate(screen.route) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                popUpTo("room") {
+                                    saveState = true
+                                    inclusive = false
+                                }
                                 launchSingleTop = true
                                 restoreState = true
                             }
