@@ -25,13 +25,13 @@ import com.wegielek.simpleplanningpoker.domain.usecases.vote.CreateVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.DeleteVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.GetVotesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
-import com.wegielek.simpleplanningpoker.prefs.Preferences
 import com.wegielek.simpleplanningpoker.prefs.Preferences.clearRoomCodeFromStorage
 import com.wegielek.simpleplanningpoker.prefs.Preferences.getRoomCodeFromStorage
 import com.wegielek.simpleplanningpoker.prefs.Preferences.getToken
 import com.wegielek.simpleplanningpoker.prefs.Preferences.saveRoomCodeToStorage
 import com.wegielek.simpleplanningpoker.presentation.ui.views.room.RoomType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -129,6 +129,9 @@ class RoomViewModel
                 try {
                     val story = getStoryUseCase(pk)
                     Log.d(logTag, "Story: $story")
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Get story cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error fetching story: ${e.message}")
                 }
@@ -198,6 +201,9 @@ class RoomViewModel
                         Log.d(logTag, "Fetching room with code: $roomCode")
                         _room.value = getRoomUseCase(roomCode)
                     }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Fetch room cancelled", e)
+                    throw e
                 } catch (
                     e: Exception,
                 ) {
@@ -209,6 +215,9 @@ class RoomViewModel
                 _participants.value = _room.value?.participants
                 try {
                     _stories.value = _room.value?.let { getStoriesUseCase(it.id) }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Fetch stories cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error fetching stories: ${e.message}")
                 }
@@ -227,6 +236,9 @@ class RoomViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     _votes.value = currentStory?.let { getVotesUseCase(it.id) }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Fetch votes cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error fetching votes: ${e.message}")
                 }
@@ -264,6 +276,9 @@ class RoomViewModel
                     val roomData: Room = createRoomUseCase(name, type)
                     createStoryUseCase(roomData.id, "Story")
                     roomCode = roomData.code
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Create room cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error creating room: ${e.message}")
                 }
@@ -285,6 +300,9 @@ class RoomViewModel
                                 .toString(),
                         )
                     }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Create story cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error creating story: ${e.message}")
                 }
@@ -302,6 +320,9 @@ class RoomViewModel
                             .put("title", story.title)
                             .toString(),
                     )
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Delete story cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error deleting story: ${e.message}")
                 }
@@ -326,6 +347,9 @@ class RoomViewModel
                 try {
                     joinRoomUseCase(code)
                     roomCode = code
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Join room cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     onError(e.message ?: "Unknown error")
                 }
@@ -440,6 +464,9 @@ class RoomViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     currentStory?.let { createVoteUseCase(it.id, selectedVoteValue) }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Create vote cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error creating vote: ${e.message}")
                 }
@@ -477,6 +504,9 @@ class RoomViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     currentStory?.id?.let { deleteVoteUseCase(it) }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Delete vote cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Error deleting vote: ${e.message}")
                 }

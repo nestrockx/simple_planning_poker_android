@@ -10,9 +10,9 @@ import com.wegielek.simpleplanningpoker.domain.usecases.auth.GuestLoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LoginUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 sealed class AuthState {
@@ -117,6 +117,7 @@ class AuthViewModel
         }
 
         fun login() {
+            if (!username.isNotEmpty() || !password.isNotEmpty()) return
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (nicknameError == null && passwordError == null) {
@@ -127,6 +128,9 @@ class AuthViewModel
                                 password.trim(),
                             )
                     }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Login cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Login failed", e)
                 }
@@ -134,6 +138,7 @@ class AuthViewModel
         }
 
         fun register() {
+            if (!nickname.isNotEmpty() || !username.isNotEmpty() || !password.isNotEmpty()) return
             viewModelScope.launch(Dispatchers.IO) {
                 try {
                     if (nicknameError == null && nicknameError == null && passwordError == null) {
@@ -148,6 +153,9 @@ class AuthViewModel
                                 password.trim(),
                             )
                     }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Registration cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Registration failed", e)
                 }
@@ -162,6 +170,9 @@ class AuthViewModel
                         Log.d(logTag, "Logging : $nickname")
                         guestLoginResult = guestLoginUseCase(nickname.trim())
                     }
+                } catch (e: CancellationException) {
+                    Log.e(logTag, "Guest login cancelled", e)
+                    throw e
                 } catch (e: Exception) {
                     Log.e(logTag, "Guest login failed", e)
                 }

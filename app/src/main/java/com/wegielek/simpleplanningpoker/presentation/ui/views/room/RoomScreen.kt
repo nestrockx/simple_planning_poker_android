@@ -234,7 +234,9 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                     } else {
                                         val voted =
                                             votes?.any { vote ->
-                                                vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id
+                                                vote.user.id == participant.id &&
+                                                    vote.storyId == viewModel.currentStory?.id &&
+                                                    vote.value.isNotEmpty()
                                             } == true
                                         if (voted) {
                                             Box(
