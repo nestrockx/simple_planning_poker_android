@@ -61,8 +61,12 @@ class AccountViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 Preferences.clearRoomCodeFromStorage(context)
                 Preferences.clearToken(context)
-                logoutUseCase()
                 isLoggedOut = true
+                try {
+                    logoutUseCase()
+                } catch (e: Exception) {
+                    Log.e(logTag, "Error logging out", e)
+                }
             }
         }
 

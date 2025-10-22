@@ -127,7 +127,7 @@ class AuthViewModel
                                 password.trim(),
                             )
                     }
-                } catch (e: HttpException) {
+                } catch (e: Exception) {
                     Log.e(logTag, "Login failed", e)
                 }
             }
@@ -148,7 +148,7 @@ class AuthViewModel
                                 password.trim(),
                             )
                     }
-                } catch (e: HttpException) {
+                } catch (e: Exception) {
                     Log.e(logTag, "Registration failed", e)
                 }
             }
@@ -162,7 +162,7 @@ class AuthViewModel
                         Log.d(logTag, "Logging : $nickname")
                         guestLoginResult = guestLoginUseCase(nickname.trim())
                     }
-                } catch (e: HttpException) {
+                } catch (e: Exception) {
                     Log.e(logTag, "Guest login failed", e)
                 }
             }
