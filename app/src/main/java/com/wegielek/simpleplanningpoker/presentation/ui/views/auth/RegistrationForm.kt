@@ -93,6 +93,10 @@ fun RegistrationForm(
             singleLine = true,
             isError = viewModel.usernameError != null,
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions =
+                KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                ),
         )
 
         viewModel.usernameError?.let {
@@ -113,6 +117,10 @@ fun RegistrationForm(
             singleLine = true,
             isError = viewModel.nicknameError != null,
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions =
+                KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                ),
         )
 
         viewModel.nicknameError?.let {

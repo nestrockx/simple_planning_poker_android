@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.filled.Close
@@ -45,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -64,7 +66,6 @@ fun StoriesSidebar(
     val scope = rememberCoroutineScope()
     val room = viewModel.room.collectAsState()
     val stories = viewModel.stories.collectAsState()
-//    val votes = viewModel.votes.collectAsState()
     val currentStory = viewModel.currentStory
 
     val density = LocalDensity.current
@@ -136,10 +137,6 @@ fun StoriesSidebar(
                                                 MaterialTheme.colorScheme.primary.copy(
                                                     alpha = 0.4f,
                                                 ),
-//                                        selectedTextColor = MaterialTheme.colorScheme.primary,
-//                                        selectedIconColor = MaterialTheme.colorScheme.primary,
-//                                        unselectedTextColor = MaterialTheme.colorScheme.onSurface,
-//                                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         ),
                                 )
                                 if (index < storyList.lastIndex) {
@@ -173,6 +170,10 @@ fun StoriesSidebar(
                             label = { Text("New story") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                            keyboardOptions =
+                                KeyboardOptions(
+                                    imeAction = ImeAction.Done,
+                                ),
                         )
                         Button(onClick = { onAddStory() }) { Text("Add") }
                     }

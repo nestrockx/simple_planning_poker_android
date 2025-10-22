@@ -11,7 +11,6 @@ import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.UpdateNicknameUseCase
-import com.wegielek.simpleplanningpoker.prefs.Preferences
 import com.wegielek.simpleplanningpoker.prefs.Preferences.clearRoomCodeFromStorage
 import com.wegielek.simpleplanningpoker.prefs.Preferences.clearToken
 import dagger.hilt.android.lifecycle.HiltViewModel

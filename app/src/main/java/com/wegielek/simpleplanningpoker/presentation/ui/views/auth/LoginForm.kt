@@ -89,6 +89,10 @@ fun LoginForm(
             label = { Text("Username") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions =
+                KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                ),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
