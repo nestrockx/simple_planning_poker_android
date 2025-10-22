@@ -12,6 +12,8 @@ import com.wegielek.simpleplanningpoker.domain.usecases.auth.LogoutUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.GetUserInfoUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.user.UpdateNicknameUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
+import com.wegielek.simpleplanningpoker.prefs.Preferences.clearRoomCodeFromStorage
+import com.wegielek.simpleplanningpoker.prefs.Preferences.clearToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,8 +61,8 @@ class AccountViewModel
 
         fun logout(context: Context) {
             viewModelScope.launch(Dispatchers.IO) {
-                Preferences.clearRoomCodeFromStorage(context)
-                Preferences.clearToken(context)
+                clearRoomCodeFromStorage(context)
+                clearToken(context)
                 isLoggedOut = true
                 try {
                     logoutUseCase()

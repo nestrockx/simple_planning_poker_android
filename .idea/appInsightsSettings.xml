@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.wegielek.simpleplanningpoker" />
+                  <option name="mobileSdkAppId" value="1:167883909527:android:a6e6546bf4987c93603cd2" />
+                  <option name="projectId" value="simple-planning-poker-1ffc6" />
+                  <option name="projectNumber" value="167883909527" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import com.wegielek.simpleplanningpoker.R
 import com.wegielek.simpleplanningpoker.prefs.Preferences
+import com.wegielek.simpleplanningpoker.prefs.Preferences.getRoomCodeFromStorage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -57,7 +58,7 @@ fun ShareScreen(onNavigate: () -> Unit) {
             )
         }
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            Preferences.getRoomCodeFromStorage(context)?.let {
+            getRoomCodeFromStorage(context)?.let {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Room code", fontSize = 25.sp)
                     Spacer(Modifier.size(10.dp))

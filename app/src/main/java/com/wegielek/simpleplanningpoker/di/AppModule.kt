@@ -3,7 +3,7 @@ package com.wegielek.simpleplanningpoker.di
 import android.content.Context
 import com.wegielek.simpleplanningpoker.data.remote.AuthInterceptor
 import com.wegielek.simpleplanningpoker.data.remote.PokerApiService
-import com.wegielek.simpleplanningpoker.prefs.Preferences.Companion.getTokenOnce
+import com.wegielek.simpleplanningpoker.prefs.Preferences.getTokenOnce
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

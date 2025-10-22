@@ -18,6 +18,7 @@ import com.wegielek.simpleplanningpoker.domain.models.room.Story
 import com.wegielek.simpleplanningpoker.domain.models.room.Vote
 import com.wegielek.simpleplanningpoker.domain.repository.PokerRepository
 import com.wegielek.simpleplanningpoker.prefs.Preferences
+import com.wegielek.simpleplanningpoker.prefs.Preferences.saveToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class PokerRepositoryImpl
                 .login(LoginRequestDto(username, password))
                 .toDomain()
                 .also {
-                    Preferences.saveToken(context, it.accessToken)
+                    saveToken(context, it.accessToken)
                 }.accessToken
                 .isNotEmpty()
 
@@ -49,7 +50,7 @@ class PokerRepositoryImpl
                 .register(RegisterRequestDto(username, nickname, password))
                 .toDomain()
                 .also {
-                    Preferences.saveToken(context, it.accessToken)
+                    saveToken(context, it.accessToken)
                 }.accessToken
                 .isNotEmpty()
 
@@ -58,7 +59,7 @@ class PokerRepositoryImpl
                 .guestLogin(GuestLoginRequestDto(nickname))
                 .toDomain()
                 .also {
-                    Preferences.saveToken(context, it.accessToken)
+                    saveToken(context, it.accessToken)
                 }.accessToken
                 .isNotEmpty()
 

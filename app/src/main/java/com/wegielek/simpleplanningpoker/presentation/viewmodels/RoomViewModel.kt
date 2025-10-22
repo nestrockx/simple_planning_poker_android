@@ -26,6 +26,10 @@ import com.wegielek.simpleplanningpoker.domain.usecases.vote.DeleteVoteUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.vote.GetVotesUseCase
 import com.wegielek.simpleplanningpoker.domain.usecases.websocket.WebSocketUseCase
 import com.wegielek.simpleplanningpoker.prefs.Preferences
+import com.wegielek.simpleplanningpoker.prefs.Preferences.clearRoomCodeFromStorage
+import com.wegielek.simpleplanningpoker.prefs.Preferences.getRoomCodeFromStorage
+import com.wegielek.simpleplanningpoker.prefs.Preferences.getToken
+import com.wegielek.simpleplanningpoker.prefs.Preferences.saveRoomCodeToStorage
 import com.wegielek.simpleplanningpoker.presentation.ui.views.room.RoomType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -97,10 +101,10 @@ class RoomViewModel
 
         // room code
         fun getRoomCode(context: Context): String {
-            if (roomCode.isNotEmpty() && Preferences.getRoomCodeFromStorage(context) != null) return roomCode
+            if (roomCode.isNotEmpty() && getRoomCodeFromStorage(context) != null) return roomCode
 
-            if (Preferences.getRoomCodeFromStorage(context) != null) {
-                roomCode = Preferences.getRoomCodeFromStorage(context)!!
+            if (getRoomCodeFromStorage(context) != null) {
+                roomCode = getRoomCodeFromStorage(context)!!
             } else if (roomCode != "") {
                 saveRoomCode(context, roomCode)
             }
@@ -112,12 +116,12 @@ class RoomViewModel
             roomCode: String,
         ) {
             this.roomCode = roomCode
-            Preferences.saveRoomCodeToStorage(context, roomCode)
+            saveRoomCodeToStorage(context, roomCode)
         }
 
         fun clearRoomCode(context: Context) {
             roomCode = ""
-            Preferences.clearRoomCodeFromStorage(context)
+            clearRoomCodeFromStorage(context)
         }
 
         fun getStory(pk: Int) {
@@ -160,7 +164,7 @@ class RoomViewModel
                     }
                 } else {
                     repeat = 0
-                    Preferences.getToken(context).collect { token ->
+                    getToken(context).collect { token ->
                         token?.let { webSocketUseCase.connect(roomCode, it) }
                     }
                 }

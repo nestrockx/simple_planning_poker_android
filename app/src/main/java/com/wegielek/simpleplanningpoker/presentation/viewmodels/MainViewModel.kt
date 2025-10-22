@@ -14,6 +14,8 @@ class MainViewModel
     constructor(
         private val getUserInfoUseCase: GetUserInfoUseCase,
     ) : ViewModel() {
+        val logTag = "MainViewModel"
+
         fun getUserInfo() =
             viewModelScope.async(Dispatchers.IO) {
                 getUserInfoUseCase()

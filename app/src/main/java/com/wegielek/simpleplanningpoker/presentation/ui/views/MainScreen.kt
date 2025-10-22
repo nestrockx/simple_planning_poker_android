@@ -8,7 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +24,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
+    val logTag = "MainScreen"
     val startDestination = "splash"
 
     Scaffold(
@@ -40,7 +41,7 @@ fun MainScreen(
             NavHost(navController = navController, startDestination = startDestination) {
                 composable("auth") {
                     AuthScreen {
-                        navController.navigate("account") {
+                        navController.navigate("room") {
                             popUpTo(0)
                             launchSingleTop = true
                         }
@@ -54,7 +55,7 @@ fun MainScreen(
                                 popUpTo("splash") { inclusive = true }
                             }
                         } catch (e: Exception) {
-                            Log.e("MainScreen", "Error getting user info", e)
+                            Log.e(logTag, "Error getting user info", e)
                             navController.navigate("auth") {
                                 popUpTo("splash") { inclusive = true }
                             }
