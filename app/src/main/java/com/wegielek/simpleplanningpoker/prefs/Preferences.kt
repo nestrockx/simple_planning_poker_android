@@ -23,7 +23,7 @@ object Preferences {
     private fun getDataStore(context: Context) = context.applicationContext.secureDataStore
 
     private fun getOrCreateSecretKey(context: Context): SecretKey {
-        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val prefs = context.applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val keyString = prefs.getString("aes_key", null)
         return if (keyString != null) {
             val bytes = Base64.decode(keyString, Base64.DEFAULT)
@@ -101,19 +101,19 @@ object Preferences {
         context: Context,
         roomCode: String?,
     ) {
-        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val prefs = context.applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         prefs.edit {
             putString("room_code", roomCode)
         }
     }
 
     fun getRoomCodeFromStorage(context: Context): String? {
-        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val prefs = context.applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         return prefs.getString("room_code", null)
     }
 
     fun clearRoomCodeFromStorage(context: Context) {
-        val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val prefs = context.applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
         prefs.edit {
             remove("room_code")
         }

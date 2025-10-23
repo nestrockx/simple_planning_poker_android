@@ -32,7 +32,9 @@ import com.wegielek.simpleplanningpoker.prefs.Preferences.saveRoomCodeToStorage
 import com.wegielek.simpleplanningpoker.presentation.ui.views.room.RoomType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,6 +65,9 @@ class RoomViewModel
         private val webSocketUseCase: WebSocketUseCase,
     ) : ViewModel() {
         val logTag = "RoomViewModel"
+
+        private val wsCollectionJob = SupervisorJob()
+        private val wsScope = CoroutineScope(Dispatchers.IO + wsCollectionJob)
 
         private var repeat = 0
 
@@ -140,34 +145,35 @@ class RoomViewModel
 
         // Websocket init
         fun connectWebSocket(context: Context) {
-            viewModelScope.launch(Dispatchers.IO) {
+            wsScope.launch {
                 webSocketUseCase.isConnected.collect {
                     Log.d("WebSocket", "Connected: $it")
                     isConnected = it
                 }
             }
-            viewModelScope.launch(Dispatchers.IO) {
+
+            wsScope.launch {
                 webSocketUseCase.incomingMessages.collect {
                     Log.d("WebSocket", "Received message: $it")
                     _messages.value = _messages.value + it
                 }
             }
 
-            connect(context)
+            connect(context.applicationContext)
         }
 
-        private fun connect(context: Context) {
+        private fun connect(appContext: Context) {
             viewModelScope.launch(Dispatchers.IO) {
                 if (!roomCode.isNotEmpty()) {
                     repeat += 1
                     if (repeat <= REPEAT_LIMIT) {
                         delay(100)
                         Log.d("Websocket", "Reconnecting...")
-                        connect(context)
+                        connect(appContext)
                     }
                 } else {
                     repeat = 0
-                    getToken(context).collect { token ->
+                    getToken(appContext).collect { token ->
                         token?.let { webSocketUseCase.connect(roomCode, it) }
                     }
                 }
@@ -181,6 +187,7 @@ class RoomViewModel
         override fun onCleared() {
             super.onCleared()
             Log.d("Websocket", "onCleared")
+            wsCollectionJob.cancel()
             disconnectWebsocket()
         }
 
