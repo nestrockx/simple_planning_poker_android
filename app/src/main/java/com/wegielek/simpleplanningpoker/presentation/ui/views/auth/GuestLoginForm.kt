@@ -81,7 +81,7 @@ fun GuestLoginForm(
         OutlinedTextField(
             value = nickname,
             onValueChange = { viewModel.onNicknameChanged(it) },
-            label = { Text("DisplayName") },
+            label = { Text("Display name") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions =
