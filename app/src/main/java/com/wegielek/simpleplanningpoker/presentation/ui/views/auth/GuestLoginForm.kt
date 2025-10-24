@@ -1,5 +1,7 @@
 package com.wegielek.simpleplanningpoker.presentation.ui.views.auth
 
+import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,11 +24,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AuthViewModel
 import com.wegielek.simpleplanningpoker.utils.ScreenUtils.pxToDp
@@ -40,6 +45,8 @@ fun GuestLoginForm(
 ) {
     val scope = rememberCoroutineScope()
     var loading by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     val nickname = viewModel.nickname
 
@@ -69,7 +76,7 @@ fun GuestLoginForm(
     ) {
         Text("Guest Login", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.padding(16.dp))
 
         OutlinedTextField(
             value = nickname,
@@ -83,7 +90,7 @@ fun GuestLoginForm(
                 ),
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.padding(16.dp))
 
         if (!loading) {
             Button(
@@ -94,5 +101,21 @@ fun GuestLoginForm(
         } else {
             CircularProgressIndicator(modifier = Modifier.padding(vertical = 8.dp))
         }
+
+        Spacer(Modifier.padding(16.dp))
+
+        Text(
+            text = "Privacy Policy",
+            color = MaterialTheme.colorScheme.primary,
+            modifier =
+                Modifier.clickable {
+                    val intent =
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            "https://nestrockx.github.io/simpleplanningpokerprivacypolicy.html".toUri(),
+                        )
+                    context.startActivity(intent)
+                },
+        )
     }
 }

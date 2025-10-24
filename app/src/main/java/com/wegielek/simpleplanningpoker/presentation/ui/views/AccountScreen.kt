@@ -1,5 +1,8 @@
 package com.wegielek.simpleplanningpoker.presentation.ui.views
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.wegielek.simpleplanningpoker.R
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.AccountViewModel
@@ -74,56 +78,71 @@ fun AccountScreen(
             modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
             contentAlignment = Alignment.Center,
         ) {
-            Row(Modifier.padding(20.dp)) {
-                Column {
-                    Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.padding(18.dp))
-                    Text("Display name: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                }
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(Modifier.padding(20.dp)) {
+                    Column {
+                        Text("Username: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.padding(18.dp))
+                        Text("Display name: ", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    }
 
-                Column {
-                    user.value?.username?.let { Text(it, fontSize = 20.sp) }
-                    Spacer(modifier = Modifier.padding(6.dp))
-                    if (!viewModel.isNicknameInEdit) {
+                    Column {
+                        user.value?.username?.let { Text(it, fontSize = 20.sp) }
                         Spacer(modifier = Modifier.padding(6.dp))
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
                         if (!viewModel.isNicknameInEdit) {
-                            user.value
-                                ?.profile
-                                ?.nickname
-                                ?.let { Text(it, fontSize = 20.sp) }
-                        } else {
-                            OutlinedTextField(
-                                value = nickname,
-                                onValueChange = { viewModel.onNicknameChanged(it) },
-                                label = { Text("New nickname") },
-                                singleLine = true,
-                                modifier = Modifier.weight(1f),
-                            )
+                            Spacer(modifier = Modifier.padding(6.dp))
                         }
-                        if (!viewModel.isNicknameInEdit) {
-                            IconButton(onClick = { viewModel.editNickname(true) }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ModeEdit,
-                                    contentDescription = "Edit nickname",
-                                    tint = MaterialTheme.colorScheme.primary,
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (!viewModel.isNicknameInEdit) {
+                                user.value
+                                    ?.profile
+                                    ?.nickname
+                                    ?.let { Text(it, fontSize = 20.sp) }
+                            } else {
+                                OutlinedTextField(
+                                    value = nickname,
+                                    onValueChange = { viewModel.onNicknameChanged(it) },
+                                    label = { Text("New nickname") },
+                                    singleLine = true,
+                                    modifier = Modifier.weight(1f),
                                 )
                             }
-                        } else {
-                            IconButton(onClick = {
-                                viewModel.editNickname(false)
-                                viewModel.updateNickname()
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Check,
-                                    contentDescription = "Confirm nickname edit",
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
+                            if (!viewModel.isNicknameInEdit) {
+                                IconButton(onClick = { viewModel.editNickname(true) }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.ModeEdit,
+                                        contentDescription = "Edit nickname",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = {
+                                    viewModel.editNickname(false)
+                                    viewModel.updateNickname()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Check,
+                                        contentDescription = "Confirm nickname edit",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
                             }
                         }
                     }
                 }
+                Text(
+                    text = "Privacy Policy",
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier =
+                        Modifier.clickable {
+                            val intent =
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    "https://nestrockx.github.io/simpleplanningpokerprivacypolicy.html".toUri(),
+                                )
+                            context.startActivity(intent)
+                        },
+                )
             }
             ExtendedFloatingActionButton(
                 onClick = {
