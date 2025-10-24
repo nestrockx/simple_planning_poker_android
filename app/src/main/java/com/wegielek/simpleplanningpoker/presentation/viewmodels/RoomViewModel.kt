@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wegielek.simpleplanningpoker.domain.models.room.ParticipantUser
 import com.wegielek.simpleplanningpoker.domain.models.room.Room
 import com.wegielek.simpleplanningpoker.domain.models.room.Story
@@ -149,6 +150,14 @@ class RoomViewModel
                 webSocketUseCase.isConnected.collect {
                     Log.d("WebSocket", "Connected: $it")
                     isConnected = it
+                    if (isConnected) {
+                        webSocketUseCase.sendMessage(
+                            JSONObject()
+                                .put("action", "add_p")
+                                .put("story_id", currentStory?.id)
+                                .toString(),
+                        )
+                    }
                 }
             }
 
@@ -192,7 +201,16 @@ class RoomViewModel
         }
 
         fun disconnectWebsocket() {
-            webSocketUseCase.disconnect()
+            viewModelScope.launch {
+                webSocketUseCase.sendMessage(
+                    JSONObject()
+                        .put("action", "remove_p")
+                        .put("story_id", currentStory?.id)
+                        .toString(),
+                )
+                delay(1000)
+                webSocketUseCase.disconnect()
+            }
         }
 
         // Update active story
