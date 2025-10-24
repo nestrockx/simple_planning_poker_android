@@ -273,13 +273,6 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                         }
                     }
                 }
-                FloatingActionButton(
-                    onClick = { viewModel.showVotingDialog() },
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                ) {
-                    Icon(Icons.Default.HowToVote, contentDescription = "Vote")
-                }
 
                 val base = MaterialTheme.colorScheme.primary.toArgb()
                 val background = MaterialTheme.colorScheme.background.toArgb()
@@ -287,6 +280,14 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                 val adjustedColor = Color(blended)
                 viewModel.currentStory?.let {
                     if (!it.isRevealed) {
+                        FloatingActionButton(
+                            onClick = { viewModel.showVotingDialog() },
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+                        ) {
+                            Icon(Icons.Default.HowToVote, contentDescription = "Vote")
+                        }
+
                         ExtendedFloatingActionButton(
                             onClick = { viewModel.revealVotesSend(true) },
                             containerColor = adjustedColor,
