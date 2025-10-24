@@ -218,16 +218,16 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                 )
                                 viewModel.currentStory?.let { story ->
                                     if (story.isRevealed) {
-                                        Box(
-                                            modifier =
-                                                Modifier
-                                                    .wrapContentSize()
-                                                    .clip(shape = CircleShape)
-                                                    .background(color = MaterialTheme.colorScheme.primary),
-                                        ) {
-                                            votes?.let {
-                                                for (vote in it) {
-                                                    if (vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id) {
+                                        votes?.let {
+                                            for (vote in it) {
+                                                if (vote.user.id == participant.id && vote.storyId == viewModel.currentStory?.id) {
+                                                    Box(
+                                                        modifier =
+                                                            Modifier
+                                                                .wrapContentSize()
+                                                                .clip(shape = CircleShape)
+                                                                .background(color = MaterialTheme.colorScheme.primary),
+                                                    ) {
                                                         Text(
                                                             vote.value,
                                                             fontSize = 20.sp,
