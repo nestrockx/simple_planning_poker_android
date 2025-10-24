@@ -44,19 +44,19 @@ fun AuthScreen(
     val scrollState = rememberScrollState()
     val padding: Dp = if (scrollState.maxValue == 0) 0.dp else 12.dp
 
-    LaunchedEffect(viewModel.loginResult) {
-        if (viewModel.loginResult) {
-            viewModel.clearLoginResult()
-            onNavigate()
-        }
-    }
-
-    LaunchedEffect(viewModel.registerResult) {
-        if (viewModel.registerResult) {
-            viewModel.clearRegisterResult()
-            onNavigate()
-        }
-    }
+//    LaunchedEffect(viewModel.loginResult) {
+//        if (viewModel.loginResult) {
+//            viewModel.clearLoginResult()
+//            onNavigate()
+//        }
+//    }
+//
+//    LaunchedEffect(viewModel.registerResult) {
+//        if (viewModel.registerResult) {
+//            viewModel.clearRegisterResult()
+//            onNavigate()
+//        }
+//    }
 
     LaunchedEffect(viewModel.guestLoginResult) {
         if (viewModel.guestLoginResult) {

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +56,8 @@ import com.wegielek.simpleplanningpoker.domain.models.websocket.RevealVotes
 import com.wegielek.simpleplanningpoker.domain.models.websocket.Summon
 import com.wegielek.simpleplanningpoker.domain.models.websocket.VoteUpdate
 import com.wegielek.simpleplanningpoker.presentation.viewmodels.RoomViewModel
+import com.wegielek.simpleplanningpoker.utils.ScreenUtils.pxToDp
+import kotlin.math.min
 
 @Composable
 fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
@@ -61,6 +65,13 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    val verticalScreenWidth =
+        min(
+            LocalWindowInfo.current.containerSize.width,
+            LocalWindowInfo.current.containerSize.height,
+        )
+    val horizontalPadding = 24.dp
 
     DisposableEffect(lifecycleOwner) {
         val observer =
@@ -192,9 +203,9 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier =
                                     Modifier
-                                        .fillMaxWidth()
+                                        .width(pxToDp(verticalScreenWidth))
                                         .padding(
-                                            horizontal = 24.dp,
+                                            horizontal = horizontalPadding,
                                         ).border(1.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(20.dp))
                                         .padding(24.dp),
                             ) {

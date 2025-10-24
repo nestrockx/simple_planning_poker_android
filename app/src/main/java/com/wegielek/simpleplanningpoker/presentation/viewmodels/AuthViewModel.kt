@@ -33,12 +33,12 @@ class AuthViewModel
     ) : ViewModel() {
         val logTag = "AuthViewModel"
 
-        var loginResult by mutableStateOf(false)
-            private set
+//        var loginResult by mutableStateOf(false)
+//            private set
         var guestLoginResult by mutableStateOf(false)
             private set
-        var registerResult by mutableStateOf(false)
-            private set
+//        var registerResult by mutableStateOf(false)
+//            private set
 
         var username by mutableStateOf("")
             private set
@@ -104,63 +104,63 @@ class AuthViewModel
             this.authState = authState
         }
 
-        fun clearLoginResult() {
-            loginResult = false
-        }
+//        fun clearLoginResult() {
+//            loginResult = false
+//        }
 
         fun clearGuestLoginResult() {
             guestLoginResult = false
         }
 
-        fun clearRegisterResult() {
-            registerResult = false
-        }
+//        fun clearRegisterResult() {
+//            registerResult = false
+//        }
 
-        fun login() {
-            if (!username.isNotEmpty() || !password.isNotEmpty()) return
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    if (nicknameError == null && passwordError == null) {
-                        Log.d(logTag, "Logging in with username: $username")
-                        loginResult =
-                            loginUseCase(
-                                username.trim(),
-                                password.trim(),
-                            )
-                    }
-                } catch (e: CancellationException) {
-                    Log.e(logTag, "Login cancelled", e)
-                    throw e
-                } catch (e: Exception) {
-                    Log.e(logTag, "Login failed", e)
-                }
-            }
-        }
+//        fun login() {
+//            if (!username.isNotEmpty() || !password.isNotEmpty()) return
+//            viewModelScope.launch(Dispatchers.IO) {
+//                try {
+//                    if (nicknameError == null && passwordError == null) {
+//                        Log.d(logTag, "Logging in with username: $username")
+//                        loginResult =
+//                            loginUseCase(
+//                                username.trim(),
+//                                password.trim(),
+//                            )
+//                    }
+//                } catch (e: CancellationException) {
+//                    Log.e(logTag, "Login cancelled", e)
+//                    throw e
+//                } catch (e: Exception) {
+//                    Log.e(logTag, "Login failed", e)
+//                }
+//            }
+//        }
 
-        fun register() {
-            if (!nickname.isNotEmpty() || !username.isNotEmpty() || !password.isNotEmpty()) return
-            viewModelScope.launch(Dispatchers.IO) {
-                try {
-                    if (nicknameError == null && nicknameError == null && passwordError == null) {
-                        Log.d(
-                            logTag,
-                            "Registering with username: $username, nickname: $nickname",
-                        )
-                        registerResult =
-                            registerUseCase(
-                                username.trim(),
-                                nickname.trim(),
-                                password.trim(),
-                            )
-                    }
-                } catch (e: CancellationException) {
-                    Log.e(logTag, "Registration cancelled", e)
-                    throw e
-                } catch (e: Exception) {
-                    Log.e(logTag, "Registration failed", e)
-                }
-            }
-        }
+//        fun register() {
+//            if (!nickname.isNotEmpty() || !username.isNotEmpty() || !password.isNotEmpty()) return
+//            viewModelScope.launch(Dispatchers.IO) {
+//                try {
+//                    if (nicknameError == null && nicknameError == null && passwordError == null) {
+//                        Log.d(
+//                            logTag,
+//                            "Registering with username: $username, nickname: $nickname",
+//                        )
+//                        registerResult =
+//                            registerUseCase(
+//                                username.trim(),
+//                                nickname.trim(),
+//                                password.trim(),
+//                            )
+//                    }
+//                } catch (e: CancellationException) {
+//                    Log.e(logTag, "Registration cancelled", e)
+//                    throw e
+//                } catch (e: Exception) {
+//                    Log.e(logTag, "Registration failed", e)
+//                }
+//            }
+//        }
 
         fun guestLogin() {
             if (!nickname.isNotEmpty()) return
