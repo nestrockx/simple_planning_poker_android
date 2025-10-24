@@ -16,11 +16,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class AuthState {
-    object Login : AuthState()
+//    object Login : AuthState()
 
     object GuestLogin : AuthState()
 
-    object Register : AuthState()
+//    object Register : AuthState()
 }
 
 @HiltViewModel
@@ -57,7 +57,7 @@ class AuthViewModel
         var isPasswordVisible by mutableStateOf(false)
             private set
 
-        var authState: AuthState by mutableStateOf(AuthState.Login)
+        var authState: AuthState by mutableStateOf(AuthState.GuestLogin)
             private set
 
         fun onUsernameChanged(newUsername: String) {
