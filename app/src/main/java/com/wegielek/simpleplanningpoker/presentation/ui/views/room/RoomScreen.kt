@@ -198,7 +198,7 @@ fun RoomScreen(viewModel: RoomViewModel = hiltViewModel()) {
                     modifier = Modifier.fillMaxSize().padding(top = 70.dp),
                 ) {
                     participants?.let { list ->
-                        items(list, key = { it.id }) { participant ->
+                        items(list) { participant ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier =

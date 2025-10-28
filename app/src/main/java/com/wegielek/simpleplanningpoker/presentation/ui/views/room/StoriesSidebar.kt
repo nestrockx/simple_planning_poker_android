@@ -104,7 +104,7 @@ fun StoriesSidebar(
                     )
                     stories.value?.let { storyList ->
                         LazyColumn(modifier = Modifier.weight(1f)) {
-                            itemsIndexed(storyList, key = { index, it -> it.id }) { index, item ->
+                            itemsIndexed(storyList) { index, item ->
                                 NavigationDrawerItem(
                                     modifier = Modifier.padding(horizontal = 12.dp),
                                     label = { Text(item.title) },
